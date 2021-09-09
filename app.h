@@ -38,6 +38,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include<stdint.h>
 
 #include "em_common.h"
 #include "app_assert.h" // got messages that sl_app_assert() is deprecated and should switch to all_assert()
@@ -50,8 +51,16 @@
 #include "src/ble_device_type.h"
 #include "src/gpio.h"
 #include "src/lcd.h"
+#include "src/timers.h"
+#include "src/oscillators.h"
+#include "src/irq.h"
 
+#define LOWEST_ENERGY_MODE  (0)
+#define LETIMER_ON_TIME_MS  (175)
+#define LETIMER_PERIOD_MS   (2250)
 
+#define LFXO_FREQ           (32768)
+#define ULFRCO_FREQ         (1000)
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
 #if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
@@ -91,7 +100,7 @@
 
 #endif // defined(SL_CATALOG_POWER_MANAGER_PRESENT)
 
-
+//static void delayApprox(int delay);
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/

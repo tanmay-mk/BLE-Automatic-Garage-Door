@@ -37,13 +37,13 @@
 
 
 #include "app.h"
+#include "em_emu.h"
+
+#include <stdint.h>
 
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
-
-
-
 
 /*****************************************************************************
  * Application Power Manager callbacks
@@ -84,12 +84,11 @@ SL_WEAK void app_init(void)
   // This is called once during start-up.
   // Don't call any Bluetooth API functions until after the boot event.
 
-
-  // Student Edit: Add a call to gpioInit() here
   gpioInit();
-
-
-
+  clkInitLETIMER();
+  initLETIMER();
+  NVIC_ClearPendingIRQ(LETIMER0_IRQn);
+  NVIC_EnableIRQ(LETIMER0_IRQn);
 }
 
 
@@ -99,7 +98,7 @@ SL_WEAK void app_init(void)
  * comment out this function. Wait loops are a bad idea in general.
  * We'll discuss how to do this a better way in the next assignment.
  *****************************************************************************/
-static void delayApprox(int delay)
+/*static void delayApprox(int delay)
 {
   volatile int i;
 
@@ -107,7 +106,7 @@ static void delayApprox(int delay)
       i=i+1;
   }
 
-} // delayApprox()
+} */// delayApprox()
 
 
 
@@ -123,17 +122,10 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  delayApprox(3500000);
-
-  gpioLed0SetOn();
-  gpioLed1SetOn();
-
-  delayApprox(3500000);
-
-  gpioLed0SetOff();
-  gpioLed1SetOff();
-
-
+  //EMU_EnterEM0(true);
+  //EMU_EnterEM1(true);
+  //EMU_EnterEM2(true);
+  //EMU_EnterEM3(true);
 
 }
 
@@ -161,7 +153,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
   // handle_ble_event(evt); // put this code in ble.c/.h
 
   // sequence through states driven by events
-  // state_machine(evt);    // put this code in scheduler.c/.h
+  /// state_machine(evt);    // put this code in scheduler.c/.h
   
   
    
