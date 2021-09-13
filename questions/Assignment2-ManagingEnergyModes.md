@@ -5,19 +5,19 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 
 **1. Fill in the below chart based on currents measured in each energy mode, replacing each TBD with measured values.  Use the [Selecting Ranges](https://www.silabs.com/documents/public/user-guides/ug343-multinode-energy-profiler.pdf) feature of the profiler to select the appropriate measurement range.  Your measurements should be accurate to 10%**
 
-Energy Mode | Period average current (uA) | Average Current with LED off (uA) | Average Current with LED On (uA)
-------------| ----------------------------|-----------------------------------|-------------------------
-EM0         |           TBD               |           TBD                     |         TBD
-EM1         |           TBD               |           TBD                     |         TBD
-EM2         |           TBD               |           TBD                     |         TBD
-EM3         |           TBD               |           TBD                     |         TBD
+Energy Mode | Period average current (uA)    | Average Current with LED off (uA)  | Average Current with LED On (uA)
+------------| -------------------------------|------------------------------------|-------------------------
+EM0         |           5160                 |           4990                     |         5490
+EM1         |           3300                 |           3230                     |         3940
+EM2         |           43.83                |           4.94                     |         502.66
+EM3         |           45.49                |           4.25                     |         509.35
 
 **2. Fill in the below chart based on time measured period and LED on time measurements for EM2 and EM3 modes, replacing each TBD with measured values.  Use the [Selecting Ranges](https://www.silabs.com/documents/public/user-guides/ug343-multinode-energy-profiler.pdf) feature of the profiler to select the appropriate measurement range.  When measuring time, measure from peak current to peak current.  Your LED on time measurement should be accurate to 1ms and your period measurement should be accurate to within 10ms**
 
 Energy Mode | Period (s) | LED On Time (ms) |
 ------------| -----------|-------------------
-EM2         |   TBD      |        TBD
-EM3         |   TBD      |        TBD
+EM2         |   2.25     |        176
+EM3         |   2.22     |        176
 
 
 **3. ScreenShots**  

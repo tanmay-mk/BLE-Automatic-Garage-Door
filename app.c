@@ -124,9 +124,9 @@ SL_WEAK void app_process_action(void)
   //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1); //adding power
                                                             //management requirement for EM1
   //EMU_EnterEM1();                                             //entering EM1 mode
-  sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2); //adding power
+  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2); //adding power
                                                                //management requirement for EM1
-  EMU_EnterEM2(true);                                          //entering EM1 mode
+  //EMU_EnterEM2(true);                                          //entering EM1 mode
 
 }
 
