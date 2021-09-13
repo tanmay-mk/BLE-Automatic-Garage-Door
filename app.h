@@ -55,12 +55,9 @@
 #include "src/oscillators.h"
 #include "src/irq.h"
 
-#define LOWEST_ENERGY_MODE  (0)
-#define LETIMER_ON_TIME_MS  (175)
-#define LETIMER_PERIOD_MS   (2250)
-
-#define LFXO_FREQ           (32768)
-#define ULFRCO_FREQ         (1000)
+#define LOWEST_ENERGY_MODE  0
+#define LETIMER_PERIOD_MS   2250
+#define LETIMER_ON_MS       175
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
 #if defined(SL_CATALOG_POWER_MANAGER_PRESENT)
@@ -74,8 +71,9 @@
 //   up the MCU from the call to sl_power_manager_sleep() in the main while (1)
 //   loop.
 // Students: We'll need to modify this for A2 onward.
-#define APP_IS_OK_TO_SLEEP      (false)
-//#define APP_IS_OK_TO_SLEEP      (true)
+
+//#define APP_IS_OK_TO_SLEEP      (false)    //Used only for EM0
+#define APP_IS_OK_TO_SLEEP      (true)        //Used for EM1, EM2 & EM3
 
 // Return values for app_sleep_on_isr_exit():
 //   SL_POWER_MANAGER_IGNORE; // The module did not trigger an ISR and it doesn't want to contribute to the decision

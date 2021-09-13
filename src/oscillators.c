@@ -7,33 +7,21 @@
 #include "em_letimer.h"
 #include <stdint.h>
 
-  uint8_t mode=0;
-  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
-  //sl_power_manager_remove_em_requirement();
-
 void clkInitLETIMER()
 {
-  CMU_ClockEnable(cmuClock_HFLE, true);
-  CMU_ClockEnable(cmuClock_GPIO, true);
+  uint32_t frequency;
 
-  energyMode(mode);
+  CMU_OscillatorEnable(cmuOsc_LFXO, true, true);          //Selecting oscillator for EM0, EM1 & EM2
+  CMU_ClockSelectSet(cmuClock_LFA, cmuSelect_LFXO);       //Configuring LETIMER clock as LFXO oscillator
 
+  //CMU_OscillatorEnable(cmuOsc_ULFRCO, true, true);            //Selecting oscillator for EM3
+  //CMU_ClockSelectSet(cmuClock_LFA, cmuSelect_ULFRCO);         //Configuring LETIMER clock as ULFRCO oscillator
+
+  CMU_ClockDivSet(cmuClock_LETIMER0, PRESCALE);
   CMU_ClockEnable(cmuClock_LETIMER0, true);
-  CMU_ClockDivSet(cmuClock_LETIMER0, cmuClkDiv_4);
+
+  frequency = CMU_ClockFreqGet (cmuClock_LFA);
+  frequency = CMU_ClockFreqGet (cmuClock_LETIMER0);
 }
 
-void energyMode (uint32_t mode)
-{
 
-  if (mode < 3)
-    {
-      CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
-      CMU_ClockSelectSet(cmuClock_LETIMER0, cmuSelect_LFXO);
-    }
-  if (mode == 3)
-    {
-      CMU_OscillatorEnable(cmuOsc_ULFRCO, true, true);
-      CMU_ClockSelectSet(cmuClock_LETIMER0, cmuSelect_ULFRCO);
-    }
-}

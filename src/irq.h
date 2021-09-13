@@ -1,3 +1,5 @@
+#ifndef _MY_ISR_
+#define _MY_ISR_
 
 #include "oscillators.h"
 #include "timers.h"
@@ -8,5 +10,5 @@
 #include "em_letimer.h"
 #include "em_core.h"
 
-void LETIMER0_IRQ_ON(void);
-void LETIMER0_IRQ_RESET(void);
+#endif
+

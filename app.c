@@ -87,8 +87,7 @@ SL_WEAK void app_init(void)
   gpioInit();
   clkInitLETIMER();
   initLETIMER();
-  NVIC_ClearPendingIRQ(LETIMER0_IRQn);
-  NVIC_EnableIRQ(LETIMER0_IRQn);
+
 }
 
 
@@ -122,10 +121,12 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  //EMU_EnterEM0(true);
-  //EMU_EnterEM1(true);
-  //EMU_EnterEM2(true);
-  //EMU_EnterEM3(true);
+  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1); //adding power
+                                                            //management requirement for EM1
+  //EMU_EnterEM1();                                             //entering EM1 mode
+  sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2); //adding power
+                                                               //management requirement for EM1
+  EMU_EnterEM2(true);                                          //entering EM1 mode
 
 }
 

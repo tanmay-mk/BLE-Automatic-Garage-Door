@@ -1170,7 +1170,6 @@ __STATIC_INLINE void EMU_EnterEM1(void)
 {
   /* Enter sleep mode. */
   SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
-  __WFI();
 }
 
 #if defined(EMU_VSCALE_PRESENT)

@@ -24,17 +24,13 @@
 void gpioInit()
 {
 
-
-  CMU_ClockEnable(cmuClock_GPIO, true);
-	//GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthStrongAlternateStrong);
-	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
+	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthStrongAlternateStrong);
+	//GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
 	GPIO_PinModeSet(LED0_port, LED0_pin, gpioModePushPull, false);
 
 	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthStrongAlternateStrong);
 	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
 	//GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
-
-
 
 } // gpioInit()
 
