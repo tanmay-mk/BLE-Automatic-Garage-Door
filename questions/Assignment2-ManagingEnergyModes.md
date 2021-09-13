@@ -62,22 +62,22 @@ LED measurement - Period
 LED measurement - LED on time   
 ![em3_led_ledOnTime][em3_led_ledOnTime]  
 
-[em0_avg_current_period]: screenshots/em0_avg_current_period.jpg "em0_avg_current_period"
-[em0_avg_current_ledoff]: screenshots/em0_avg_current_ledoff.jpg "em0_avg_current_ledoff"
-[em0_avg_current_ledon]: put-your-link-to-screenshot-image-here "em0_avg_current_ledon"
+[em0_avg_current_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM0%20Avg%20Current.png
+[em0_avg_current_ledoff]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM0%20LED%20Off%20Avg%20Current.png
+[em0_avg_current_ledon]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM0%20LED%20On%20Avg%20Current.png
 
-[em1_avg_current_period]: put-your-link-to-screenshot-image-here "em1_avg_current_period"
-[em1_avg_current_ledoff]: put-your-link-to-screenshot-image-here "em1_avg_current_ledoff"
-[em1_avg_current_ledon]: put-your-link-to-screenshot-image-here "em1_avg_current_ledon"
+[em1_avg_current_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM1%20Avg%20Current.png
+[em1_avg_current_ledoff]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM1%20LED%20Off%20Avg%20Current.png
+[em1_avg_current_ledon]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM1%20LED%20On%20Avg%20Current.png
 
-[em2_avg_current_period]: put-your-link-to-screenshot-image-here "em2_avg_current_period"
-[em2_avg_current_ledoff]: put-your-link-to-screenshot-image-here "em2_avg_current_ledoff"
-[em2_avg_current_ledon]: put-your-link-to-screenshot-image-here "em2_avg_current_ledon"
-[em2_led_period]: put-your-link-to-screenshot-image-here "em2_led_period"
-[em2_led_ledOnTime]: put-your-link-to-screenshot-image-here "em2_led_ledOnTime"
+[em2_avg_current_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM2%20Avg%20Current.png
+[em2_avg_current_ledoff]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM2%20LED%20Off%20Avg%20Current.png
+[em2_avg_current_ledon]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM2%20LED%20On%20Period.png
+[em2_led_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM2%20Period.png
+[em2_led_ledOnTime]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM2%20LED%20On%20Period.png
 
-[em3_avg_current_period]: put-your-link-to-screenshot-image-here "em3_avg_current_period"
-[em3_avg_current_ledoff]: put-your-link-to-screenshot-image-here "em3_avg_current_ledoff"
-[em3_avg_current_ledon]: put-your-link-to-screenshot-image-here "em3_avg_current_ledon"
-[em3_led_period]: put-your-link-to-screenshot-image-here "em3_led_period"
-[em3_led_ledOnTime]: put-your-link-to-screenshot-image-here "em3_led_ledOnTime"
+[em3_avg_current_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM3%20Avg%20Current.png
+[em3_avg_current_ledoff]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM3%20LED%20OFF%20Avg%20Current.png
+[em3_avg_current_ledon]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM3%20LED%20On%20Avg%20Current.png
+[em3_led_period]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM3%20Period.png
+[em3_led_ledOnTime]: https://github.com/CU-ECEN-5823/ecen5823-assignment2-tanmay-mk/blob/main/Assignment%202%20Screenshots/EM3%20LED%20On%20Period.png
