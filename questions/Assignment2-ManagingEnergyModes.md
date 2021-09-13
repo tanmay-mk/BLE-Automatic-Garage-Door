@@ -7,8 +7,8 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 
 Energy Mode | Period average current (uA)    | Average Current with LED off (uA)  | Average Current with LED On (uA)
 ------------| -------------------------------|------------------------------------|-------------------------
-EM0         |           5160                 |           4990                     |         5490
-EM1         |           3300                 |           3230                     |         3940
+EM0         |           5190                 |           4990                     |         5490
+EM1         |           3300                 |           3220                     |         3940
 EM2         |           43.83                |           4.94                     |         502.66
 EM3         |           45.49                |           4.25                     |         509.35
 

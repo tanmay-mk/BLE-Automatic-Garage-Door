@@ -72,8 +72,8 @@
 //   loop.
 // Students: We'll need to modify this for A2 onward.
 
-//#define APP_IS_OK_TO_SLEEP      (false)    //Used only for EM0
-#define APP_IS_OK_TO_SLEEP      (true)        //Used for EM1, EM2 & EM3
+#define APP_IS_OK_TO_SLEEP      (false)    //Used only for EM0
+//#define APP_IS_OK_TO_SLEEP      (true)        //Used for EM1, EM2 & EM3
 
 // Return values for app_sleep_on_isr_exit():
 //   SL_POWER_MANAGER_IGNORE; // The module did not trigger an ISR and it doesn't want to contribute to the decision
