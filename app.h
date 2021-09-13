@@ -56,8 +56,8 @@
 #include "src/irq.h"
 
 #define LOWEST_ENERGY_MODE  0
-#define LETIMER_PERIOD_MS   2250
-#define LETIMER_ON_MS       175
+#define LETIMER_PERIOD_MS   2250    //Time period of waveform in milliseconds
+#define LETIMER_ON_MS       175     //ON time of LED in milliseconds
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
 #if defined(SL_CATALOG_POWER_MANAGER_PRESENT)

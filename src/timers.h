@@ -15,11 +15,10 @@
 
 #define ACTUAL_CLK_PERIOD   1/ACTUAL_CLK_FREQ
 
-//#define VALUE_TO_LOAD       18432         //Top value for EM0, EM1 & EM2
-#define VALUE_TO_LOAD       563         //Top Value for EM 3
+#define VALUE_TO_LOAD       (LETIMER_PERIOD_MS*ACTUAL_CLK_FREQ)/1000         //comp0 value, top value for counter
 
-//#define INTERRUPT_VALUE     1434          //COMP1 value for EM0, EM1 & EM2
-#define INTERRUPT_VALUE     44          //COMP1 value for EM3
+#define INTERRUPT_VALUE     (LETIMER_ON_MS*ACTUAL_CLK_FREQ)/1000          //COMP1 value
+
 
 void initLETIMER(void);
 
