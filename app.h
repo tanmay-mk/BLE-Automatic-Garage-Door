@@ -55,9 +55,29 @@
 #include "src/oscillators.h"
 #include "src/irq.h"
 
-#define LOWEST_ENERGY_MODE  0
-#define LETIMER_PERIOD_MS   2250    //Time period of waveform in milliseconds
+#define ENERGY_MODE  0
+#define LETIMER_PERIOD_MS   3000    //Time period of waveform in milliseconds
 #define LETIMER_ON_MS       175     //ON time of LED in milliseconds
+
+#define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32.768 kHz
+#define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1kHz
+
+#if ENERGY_MODE==0
+  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EMO as LFXO
+#endif
+
+#if ENERGY_MODE==1
+  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EM1 as LFXO
+#endif
+
+#if ENERGY_MODE==2
+  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EM2 as LFXO
+#endif
+
+#if ENERGY_MODE==3
+  #define CLK_FREQ      ULFRCO_FREQ         // Defining the frequency for EM3 as ULFRCO
+#endif
+
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
 #if defined(SL_CATALOG_POWER_MANAGER_PRESENT)

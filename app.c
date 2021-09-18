@@ -128,6 +128,17 @@ SL_WEAK void app_process_action(void)
                                                                //management requirement for EM2
   //EMU_EnterEM2(true);                                          //entering EM2 mode
 
+
+  /*uint32_t evt;
+  evt = getNextEvent();
+  switch (evt) {
+  case evtLETIMER0_UF:
+  read_temp_from_si7021();
+  break;
+  case evtLETIMER0_COMP1:
+  // do something?
+  break;*/
+
 }
 
 /**************************************************************************//**

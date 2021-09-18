@@ -10,8 +10,7 @@
 
 #define PRESCALE            4
 
-//#define ACTUAL_CLK_FREQ     8192          //Actual Clock for EM0, EM1 & EM2
-#define ACTUAL_CLK_FREQ     250         //Actual Clock for EM3
+#define ACTUAL_CLK_FREQ     CLK_FREQ/PRESCALE
 
 #define ACTUAL_CLK_PERIOD   1/ACTUAL_CLK_FREQ
 
@@ -21,6 +20,9 @@
 
 
 void initLETIMER(void);
+
+void TimerWaitUs(uint32_t DELAY);
+
 
 #endif
 
