@@ -15,7 +15,7 @@ void LETIMER0_IRQHandler() {
       CORE_ENTER_CRITICAL();
       {
         LETIMER_IntClear(LETIMER0, flags);
-        schedulerSetEventReadTemperature();
+        schedulerSetEventReadTemperature();       //sets the event in the scheduler
       }
       CORE_EXIT_CRITICAL();
    }

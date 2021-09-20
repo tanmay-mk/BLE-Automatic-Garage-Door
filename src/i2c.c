@@ -3,7 +3,7 @@
 void InitI2C()
 {
   I2CSPM_Init_TypeDef init;
-  init.port = I2C0;           // Use I2C Instance 0
+  init.port = I2C0;           // I2C Instance 0
   init.sclPort=gpioPortC;         // SCL Port
   init.sclPin=10;             // SCL Pin
   init.sdaPort=gpioPortC;         // SDA Port
@@ -12,7 +12,7 @@ void InitI2C()
   init.portLocationSda=16;        // Location of SDA
   init.i2cRefFreq=0;            // Using reference clock currently configured
   init.i2cMaxFreq=I2C_FREQ_STANDARD_MAX;  // Standard rate setting
-  init.i2cClhr=i2cClockHLRStandard;   // Set to use 4:4 low/high duty cycle
+  init.i2cClhr=i2cClockHLRStandard;
 
 
   I2CSPM_Init(&init);
@@ -35,8 +35,6 @@ void turn_OFF(GPIO_Port_TypeDef PORT, uint8_t PIN)
 {
   GPIO_PinOutClear (PORT, PIN);
 }
-
-
 
 I2C_TransferReturn_TypeDef I2C_Read (uint8_t length, uint8_t SLAVE_ADDRESS, uint8_t* readValue)
 {
@@ -100,13 +98,13 @@ uint16_t  read_temp_from_si7021()
   LOG_ERROR("I2C Write Value: %d\n\r", (int) rawValue);
   #endif
 
-  I2C_Read (2, 0x80, &readAddress[0]);
+  rawValue = I2C_Read (2, 0x80, &readAddress[0]);
 
   #if ENABLE_LOGGING
   LOG_ERROR("I2C Read Value: %d\n\r", (int) rawValue);
   #endif
 
-  uint16_t value=5;
-  value =  readAddress[1];
+  uint16_t value=0;
+  value = (readAddress[0]<<8 | readAddress[1]);
   return value;
   }

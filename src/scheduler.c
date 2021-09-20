@@ -9,7 +9,7 @@
 
   uint32_t eventFlag=0;
 
-void schedulerSetEventReadTemperature()
+void schedulerSetEventReadTemperature()     //sets the event in the scheduler
 {
   CORE_DECLARE_IRQ_STATE;
   CORE_ENTER_CRITICAL();
@@ -17,7 +17,7 @@ void schedulerSetEventReadTemperature()
   CORE_EXIT_CRITICAL();
 }
 
-uint32_t getNextEvent()
+uint32_t getNextEvent()         //returns the next event to the main loop
 {
   uint32_t event=0;
   if (eventFlag)
