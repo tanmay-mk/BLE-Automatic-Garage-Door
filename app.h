@@ -54,13 +54,15 @@
 #include "src/timers.h"
 #include "src/oscillators.h"
 #include "src/irq.h"
+#include "src/scheduler.h"
+#include "src/i2c.h"
 
 #define ENERGY_MODE  0
 #define LETIMER_PERIOD_MS   3000    //Time period of waveform in milliseconds
 #define LETIMER_ON_MS       175     //ON time of LED in milliseconds
 
-#define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32.768 kHz
-#define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1kHz
+#define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
+#define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1000 Hz
 
 #if ENERGY_MODE==0
   #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EMO as LFXO

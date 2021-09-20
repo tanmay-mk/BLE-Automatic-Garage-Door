@@ -124,8 +124,13 @@ src/timers.o: ../src/timers.c \
  C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_cmu.h \
  C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_cmu_compat.h \
  C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_gpio.h \
- ../src/oscillators.h \
- C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/log.h
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/scheduler.h \
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/irq.h \
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/i2c.h \
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\driver\i2cspm\inc/sl_i2cspm.h \
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_i2c.h \
+ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/log.h \
+ ../src/oscillators.h
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\common\toolchain\inc/sl_gcc_preinclude.h:
 ../src/timers.h:
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/app.h:
@@ -251,5 +256,10 @@ C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/t
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_cmu.h:
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_cmu_compat.h:
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_gpio.h:
-../src/oscillators.h:
+C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/scheduler.h:
+C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/irq.h:
+C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/i2c.h:
+C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\driver\i2cspm\inc/sl_i2cspm.h:
+C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk\gecko_sdk_3.2.1\platform\emlib\inc/em_i2c.h:
 C:\Users\ACER\SimplicityStudio\v5_workspace\ecen5823-assignment3-tanmay-mk/src/log.h:
+../src/oscillators.h:

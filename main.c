@@ -46,9 +46,6 @@
 #include "src/log.h"
 
 
-
-
-
 int main(void)
 {
   // Initialize Silicon Labs device, system, service(s) and protocol stack(s).
@@ -61,6 +58,8 @@ int main(void)
   // Students: Place all of your 1 time initialization code in this function.
   //           See app.c
   app_init();
+  logInit();
+
 
 #if defined(SL_CATALOG_KERNEL_PRESENT)
 

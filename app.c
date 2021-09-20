@@ -84,9 +84,22 @@ SL_WEAK void app_init(void)
   // This is called once during start-up.
   // Don't call any Bluetooth API functions until after the boot event.
 
+  uint16_t energyMode = ENERGY_MODE;
+
+  if(energyMode == 1)
+    {
+      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
+    }
+  if(energyMode == 2)
+    {
+      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
+    }
+
   gpioInit();
   clkInitLETIMER();
+  InitI2C();
   initLETIMER();
+
 
 }
 
@@ -129,16 +142,45 @@ SL_WEAK void app_process_action(void)
   //EMU_EnterEM2(true);                                          //entering EM2 mode
 
 
-  /*uint32_t evt;
-  evt = getNextEvent();
-  switch (evt) {
-  case evtLETIMER0_UF:
-  read_temp_from_si7021();
-  break;
-  case evtLETIMER0_COMP1:
-  // do something?
-  break;*/
+  float temp_in_degC;
 
+  uint16_t temperature;
+
+  uint32_t evt;
+  evt = getNextEvent();
+  switch (evt)
+  {
+  case readTemperature:
+    turn_ON(gpioPortD, 15);
+    TimerWaitUs(80000);
+    turn_OFF(gpioPortD, 15);
+
+
+    temperature = read_temp_from_si7021();
+
+    temp_in_degC = (((175.72*temperature)/65536)-46.85);
+
+    LOG_INFO("Temperature in Degree Celsius: %d\n\r", (int) temp_in_degC);
+
+  break;
+
+  case noEvent:
+  break;
+}
+
+  uint16_t energyMode = ENERGY_MODE;
+  if(energyMode == 1)
+    {
+      EMU_EnterEM1();
+    }
+  if(energyMode == 2)
+    {
+      EMU_EnterEM2(true);
+    }
+  if(energyMode == 3)
+    {
+      EMU_EnterEM3(true);
+    }
 }
 
 /**************************************************************************//**
@@ -159,15 +201,13 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       printf(".\n");
   }
 
+
   // Some events require responses from our application code,
   // and don’t necessarily advance our state machines.
   // For assignment 5 uncomment the next 2 function calls
   // handle_ble_event(evt); // put this code in ble.c/.h
 
   // sequence through states driven by events
-  /// state_machine(evt);    // put this code in scheduler.c/.h
-  
-  
-   
-} // sl_bt_on_event()
+  //state_machine(evt);    // put this code in scheduler.c/.h
 
+}

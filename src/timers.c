@@ -1,6 +1,8 @@
 #include "timers.h"
 #include "app.h"
 
+#include <stdio.h>
+
 #include "oscillators.h"
 #include "em_letimer.h"
 
@@ -20,15 +22,16 @@ void initLETIMER(void)
      letimerInit.topValue = VALUE_TO_LOAD;      //Loading top value in COMP1
      letimerInit.debugRun = true;
 
+     NVIC_ClearPendingIRQ(LETIMER0_IRQn);
      NVIC_EnableIRQ(LETIMER0_IRQn);             //Enabling NVIC to handle LETIMER0 interrupts
 
      LETIMER_Init(LETIMER0, &letimerInit); // Initialize and enable LETIMER
-     NVIC_ClearPendingIRQ(LETIMER0_IRQn);
+
 
      LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);   //Initialize Underflow Interrupt
-     LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);  //Initialize Comp1 Interrupt
+     //LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);  //Initialize Comp1 Interrupt
 
-     LETIMER_CompareSet(LETIMER0, 1, INTERRUPT_VALUE);  //175ms
+     //LETIMER_CompareSet(LETIMER0, 1, INTERRUPT_VALUE);  //175ms
 
     //enable LETIMER
     LETIMER_Enable(LETIMER0,true);
@@ -53,7 +56,7 @@ void TimerWaitUs(uint32_t DELAY)
   MAX_COUNT=CURRENT_COUNT-TICKS;
   if(MAX_COUNT>VALUE_TO_LOAD)                  // Case when timer overflows
   {
-      TICKS=65535-MAX_COUNT;
+      TICKS=65535-MAX_COUNT; // cannot use
       MAX_COUNT=VALUE_TO_LOAD-TICKS;
   }
 
