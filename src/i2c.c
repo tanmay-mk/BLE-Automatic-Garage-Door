@@ -100,7 +100,7 @@ uint16_t  read_temp_from_si7021()
   LOG_ERROR("I2C Write Value: %d\n\r", (int) rawValue);
   #endif
 
-  rawValue = I2C_Read (2, 0x80, &readAddress[0]);
+  I2C_Read (2, 0x80, &readAddress[0]);
 
   #if ENABLE_LOGGING
   LOG_ERROR("I2C Read Value: %d\n\r", (int) rawValue);
