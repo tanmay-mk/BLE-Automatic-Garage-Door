@@ -12,7 +12,6 @@ typedef enum {
 noEvent           = 0,
 readTemperature   = 1,
 readHumidity      = 2
-//myEventFlags
 } myFlags;
 
 void schedulerSetEventReadTemperature();

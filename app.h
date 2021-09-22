@@ -57,7 +57,7 @@
 #include "src/scheduler.h"
 #include "src/i2c.h"
 
-#define ENERGY_MODE  0
+#define ENERGY_MODE  3
 #define LETIMER_PERIOD_MS   3000    //Time period of waveform in milliseconds
 #define LETIMER_ON_MS       175     //ON time of LED in milliseconds
 
@@ -93,9 +93,14 @@
 //   up the MCU from the call to sl_power_manager_sleep() in the main while (1)
 //   loop.
 // Students: We'll need to modify this for A2 onward.
-
-//#define APP_IS_OK_TO_SLEEP      (false)    //Used only for EM0
-#define APP_IS_OK_TO_SLEEP      (true)        //Used for EM1, EM2 & EM3
+// DOS: Info for this was provided in lecture 5, slide 21. Why have you not implemented it? I code it here for you.
+#if (ENERGY_MODE == 0)
+    //Used only for EM0
+    #define APP_IS_OK_TO_SLEEP      (false)
+#else
+    //Used for EM1, EM2 & EM3
+    #define APP_IS_OK_TO_SLEEP      (true)
+#endif
 
 // Return values for app_sleep_on_isr_exit():
 //   SL_POWER_MANAGER_IGNORE; // The module did not trigger an ISR and it doesn't want to contribute to the decision

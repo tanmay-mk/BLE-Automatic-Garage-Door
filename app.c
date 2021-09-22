@@ -97,11 +97,23 @@ SL_WEAK void app_init(void)
 
   gpioInit();
   clkInitLETIMER();
-  InitI2C();
+  // DOS: better to call from functions where you are about to initiate and I2C transfer
+  // InitI2C();
   initLETIMER();
 
+  // DOS: Test code to make sure TimerWaitUs() is functioning properly
+//  while (1) {
+//      TimerWaitUs(1000000);
+//      gpioLed0SetOn();
+//      TimerWaitUs(1000000);
+//      gpioLed0SetOff();
+//  }
 
-}
+
+
+
+
+} // app_init()
 
 
 /*****************************************************************************
@@ -142,32 +154,37 @@ SL_WEAK void app_process_action(void)
   //EMU_EnterEM2(true);                                          //entering EM2 mode
 
 
-  float temp_in_degC;
-
-  uint16_t temperature;
-
+//  float temp_in_degC;
+//  uint16_t temperature;
   uint32_t evt;
+
   evt = getNextEvent();
+
   switch (evt)
   {
-  case readTemperature:
-    turn_ON(gpioPortD, 15);
-    TimerWaitUs(80000);
-    turn_OFF(gpioPortD, 15);
+
+    case readTemperature:
+      read_temp_from_si7021();
+
+      // Why burden the application with all of these details? write a function
+      // to handle this as I have modified above
+      //turn_ON(gpioPortD, 15);
+      //TimerWaitUs(80000);
+      //turn_OFF(gpioPortD, 15);
+      //temperature = read_temp_from_si7021();
+      //temp_in_degC = (((175.72*temperature)/65536)-46.85);
+      //LOG_INFO("Temperature in Degree Celsius: %d\n\r", (int) temp_in_degC);
+
+    break;
 
 
-    temperature = read_temp_from_si7021();
+    case noEvent:
+    break;
 
-    temp_in_degC = (((175.72*temperature)/65536)-46.85);
+  } // switch
 
-    LOG_INFO("Temperature in Degree Celsius: %d\n\r", (int) temp_in_degC);
-
-  break;
-
-  case noEvent:
-  break;
-}
-
+  // DOS: What is this all about ?????
+  /*
   uint16_t energyMode = ENERGY_MODE;
   if(energyMode == 1)
     {
@@ -181,7 +198,11 @@ SL_WEAK void app_process_action(void)
     {
       EMU_EnterEM3(true);
     }
-}
+    */
+
+} // app_process_action()
+
+
 
 /**************************************************************************//**
  * Bluetooth stack event handler.

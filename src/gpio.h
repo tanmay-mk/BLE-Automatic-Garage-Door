@@ -27,7 +27,10 @@
 #define LED1_pin   5
 
 
-
+// DOS
+// SENSOR_ENABLE (Si7021) = DISP_ENABLE (LCD) on the main PCB
+#define Si7021SENSOR_EN_port    (gpioPortD) // Sensor Enable for I2C Si7021
+#define Si7021SENSOR_EN_pin     (15)        // Sensor Enable for I2C Si7021 at PD15
 
 
 
@@ -40,7 +43,10 @@ void gpioLed1SetOn();
 void gpioLed1SetOff();
 
 
-
-
+// DOS
+void gpioSensorEnSetOn();
+void gpioSensorEnSetOff();
+void gpioToggleLed0();
+void gpioToggleLed1();
 
 #endif /* SRC_GPIO_H_ */

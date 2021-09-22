@@ -10,5 +10,7 @@
 #include "em_letimer.h"
 #include "em_core.h"
 
+#include "src/gpio.h"
+
 #endif
 

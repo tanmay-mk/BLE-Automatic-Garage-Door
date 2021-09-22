@@ -1,5 +1,15 @@
 #include "i2c.h"
 
+// Include logging for this file
+#define INCLUDE_LOG_DEBUG 1
+#include "src/log.h"
+
+// make these global in prep for A4 which will use IRQs, so these variables need to
+// not be on the stack !!!
+I2C_TransferSeq_TypeDef    sequenceValue;
+uint8_t                    command;
+uint8_t                    read_data[2];
+
 void InitI2C()
 {
   I2CSPM_Init_TypeDef init;
@@ -18,93 +28,124 @@ void InitI2C()
   I2CSPM_Init(&init);
   //NVIC_EnableIRQ(I2C0_IRQn);
 
-  uint8_t i;
-  for (i=0; i<9; i++)
-    {
-      GPIO_PinOutSet(gpioPortC, 10);
-      GPIO_PinOutClear(gpioPortC, 10);
-    }
-}
+//DOS: no idea what your intention is here? Where are comments describing what/why you're doing?
+//  uint8_t i;
+//  for (i=0; i<9; i++)
+//    {
+//      GPIO_PinOutSet(gpioPortC, 10);
+//      GPIO_PinOutClear(gpioPortC, 10);
+ //   }
 
-void turn_ON(GPIO_Port_TypeDef PORT, uint8_t PIN)
+} // InitI2C()
+
+
+//DOS: These should really be in gpio.c, replaced with my implementations, see gpio.c
+//void turn_ON(GPIO_Port_TypeDef PORT, uint8_t PIN)
+//{
+//  GPIO_PinOutSet (PORT, PIN);
+//}
+
+//void turn_OFF(GPIO_Port_TypeDef PORT, uint8_t PIN)
+//{
+//  GPIO_PinOutClear (PORT, PIN);
+//}
+
+
+
+
+void I2C_Write ()
 {
-  GPIO_PinOutSet (PORT, PIN);
-}
 
-void turn_OFF(GPIO_Port_TypeDef PORT, uint8_t PIN)
-{
-  GPIO_PinOutClear (PORT, PIN);
-}
+  I2C_TransferReturn_TypeDef    returnValue;
 
-I2C_TransferReturn_TypeDef I2C_Read (uint8_t length, uint8_t SLAVE_ADDRESS, uint8_t* readValue)
-{
-  I2C_TransferSeq_TypeDef sequenceValue;
-  I2C_TransferReturn_TypeDef returnValue;
+  InitI2C(); // init I2C hardware
 
-  sequenceValue.addr            = SLAVE_ADDRESS;
-  sequenceValue.flags           = I2C_FLAG_READ;
-  sequenceValue.buf[0].data     = readValue;
-  sequenceValue.buf[0].len      = length;
-
-  returnValue = I2C_TransferInit(I2C0, &sequenceValue);
-
-  if (returnValue < i2cTransferNack)
-    {
-      return returnValue;
-    }
-
-  while (returnValue == i2cTransferInProgress)
-    {
-      returnValue = I2C_Transfer(I2C0);
-    }
-  return returnValue;
-
-}
-
-I2C_TransferReturn_TypeDef I2C_Write (uint8_t length, uint8_t SLAVE_ADDRESS, uint8_t* writeValue)
-{
-  I2C_TransferSeq_TypeDef sequenceValue;
-  I2C_TransferReturn_TypeDef returnValue;
-
-  sequenceValue.addr            = SLAVE_ADDRESS;
+  // set up the transfer
+  command                       = 0xF3;
+  sequenceValue.addr            = 0x40 << 1;
   sequenceValue.flags           = I2C_FLAG_WRITE;
-  sequenceValue.buf[0].data     = writeValue;
-  sequenceValue.buf[0].len      = length;
+  sequenceValue.buf[0].data     = &command;   // this is where we're taking the write data from
+  sequenceValue.buf[0].len      = sizeof(command);
 
-  returnValue = I2C_TransferInit(I2C0, &sequenceValue);
+  // execute the transfer using a polling routine
+  returnValue = I2CSPM_Transfer(I2C0, &sequenceValue);
 
-  if (returnValue < i2cTransferNack)
+  if (returnValue < i2cTransferDone)
     {
-      return returnValue;
+      LOG_ERROR ("I2C write return error code=%d", (int) returnValue);
     }
 
-  while (returnValue == i2cTransferInProgress)
-    {
-      returnValue = I2C_Transfer(I2C0);
-    }
-  return returnValue;
+} // I2C_Write()
 
-}
 
-uint16_t  read_temp_from_si7021()
+
+void I2C_Read ()
 {
-  I2C_TransferReturn_TypeDef rawValue = 0;
-  uint8_t writeAddress[1]={0xE3};
-  uint8_t readAddress[2]={0};
 
-  rawValue = I2C_Write (1, 0x80, &writeAddress[0]);
+  I2C_TransferReturn_TypeDef    returnValue;
 
-  #if ENABLE_LOGGING
-  LOG_ERROR("I2C Write Value: %d\n\r", (int) rawValue);
-  #endif
+  InitI2C(); // init I2C hardware
 
-  rawValue = I2C_Read (2, 0x80, &readAddress[0]);
+  // set up the transfer
+  sequenceValue.addr            = 0x40 << 1;
+  sequenceValue.flags           = I2C_FLAG_READ;
+  sequenceValue.buf[0].data     = &read_data[0];    // this is where the read data will be put
+  sequenceValue.buf[0].len      = sizeof(read_data);
 
-  #if ENABLE_LOGGING
-  LOG_ERROR("I2C Read Value: %d\n\r", (int) rawValue);
-  #endif
+  // execute the transfer using a polling routine
+  returnValue = I2CSPM_Transfer(I2C0, &sequenceValue);
 
-  uint16_t value=0;
-  value = (readAddress[0]<<8 | readAddress[1]);
-  return value;
-  }
+  if (returnValue < i2cTransferDone)
+    {
+      LOG_ERROR ("I2C read return error code=%d", (int) returnValue);
+    }
+
+} // I2C_Read()
+
+
+
+
+
+
+
+
+void  read_temp_from_si7021()
+{
+
+  int32_t      temp_in_degC;
+
+
+  LOG_INFO("C");
+
+  // turn power on to 7021
+  gpioSensorEnSetOn();
+
+  // wait 80ms for power to stabalize and 7021 to complete its power up sequence
+  TimerWaitUs(80000);
+
+  // Send 0xF3 command to 7021 to instruct it to take a temp reading
+  I2C_Write();
+
+  // wait 10.8ms for the 7021 to take the temp measurement
+  TimerWaitUs(10800);
+
+  // Now read the 2 bytes of temp measurement
+  I2C_Read();
+
+  // done with I2C for this measurement cycle
+  // turn power off to 7021
+  gpioSensorEnSetOff();
+
+  // read_data now contains the 2 bytes of the temp measurement
+  // convert it to C.
+  // note: MSB of measurement is in array elemt [0], so we have to swap them before conversion to C
+  temp_in_degC = (int32_t) (((175.72 * (read_data[0]<<8 | read_data[1]))/65536)-46.85);
+
+  // Log it
+  LOG_INFO("Temp=%d C", (int) temp_in_degC);
+
+} // read_temp_from_si7021()
+
+
+
+

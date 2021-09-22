@@ -58,7 +58,7 @@ int main(void)
   // Students: Place all of your 1 time initialization code in this function.
   //           See app.c
   app_init();
-  logInit();
+  //DOS logInit(); // 1- this is not required, 2- this call should go in app_init()
 
 
 #if defined(SL_CATALOG_KERNEL_PRESENT)
