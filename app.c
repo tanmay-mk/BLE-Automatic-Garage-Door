@@ -83,18 +83,6 @@ SL_WEAK void app_init(void)
   // Put your application 1-time init code here
   // This is called once during start-up.
   // Don't call any Bluetooth API functions until after the boot event.
-
-  uint16_t energyMode = ENERGY_MODE;
-
-  if(energyMode == 1)
-    {
-      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-    }
-  if(energyMode == 2)
-    {
-      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
-    }
-
   gpioInit();
   clkInitLETIMER();
   // DOS: better to call from functions where you are about to initiate and I2C transfer
@@ -108,10 +96,6 @@ SL_WEAK void app_init(void)
 //      TimerWaitUs(1000000);
 //      gpioLed0SetOff();
 //  }
-
-
-
-
 
 } // app_init()
 
@@ -146,59 +130,11 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1); //adding power
-                                                            //management requirement for EM1
-  //EMU_EnterEM1();                                             //entering EM1 mode
-  //sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2); //adding power
-                                                               //management requirement for EM2
-  //EMU_EnterEM2(true);                                          //entering EM2 mode
-
-
-//  float temp_in_degC;
-//  uint16_t temperature;
   uint32_t evt;
 
   evt = getNextEvent();
 
-  switch (evt)
-  {
-
-    case readTemperature:
-      read_temp_from_si7021();
-
-      // Why burden the application with all of these details? write a function
-      // to handle this as I have modified above
-      //turn_ON(gpioPortD, 15);
-      //TimerWaitUs(80000);
-      //turn_OFF(gpioPortD, 15);
-      //temperature = read_temp_from_si7021();
-      //temp_in_degC = (((175.72*temperature)/65536)-46.85);
-      //LOG_INFO("Temperature in Degree Celsius: %d\n\r", (int) temp_in_degC);
-
-    break;
-
-
-    case noEvent:
-    break;
-
-  } // switch
-
-  // DOS: What is this all about ?????
-  /*
-  uint16_t energyMode = ENERGY_MODE;
-  if(energyMode == 1)
-    {
-      EMU_EnterEM1();
-    }
-  if(energyMode == 2)
-    {
-      EMU_EnterEM2(true);
-    }
-  if(energyMode == 3)
-    {
-      EMU_EnterEM3(true);
-    }
-    */
+  state_machine(evt);
 
 } // app_process_action()
 

@@ -1,3 +1,6 @@
+#ifndef __MY_I2C_ROUTINE__
+#define __MY_I2C_ROUTINE__
+
 #include <sl_i2cspm.h>
 #include <em_i2c.h>
 
@@ -14,16 +17,12 @@
 void InitI2C();       //initializes I2C transfer
 
 
-//void turn_ON(GPIO_Port_TypeDef PORT, uint8_t PIN); //turns on the SI7021
+void I2C_Read ();  //reads the value during I2C transfer
 
 
-//void turn_OFF(GPIO_Port_TypeDef PORT, uint8_t PIN); //turns off the SI7021
-
-
-//I2C_TransferReturn_TypeDef I2CRead (uint8_t length, uint8_t SLAVE_ADDRESS, uint8_t* readValue);  //reads the value during I2C transfer
-
-
-//I2C_TransferReturn_TypeDef I2CWrite (uint8_t length, uint8_t SLAVE_ADDRESS, uint8_t* writeValue);   //writes the value during I2C transfer
+void I2C_Write ();   //writes the value during I2C transfer
 
 
 void  read_temp_from_si7021();      //measures the temperature of surroundings using the on chip temperature sensor
+
+#endif

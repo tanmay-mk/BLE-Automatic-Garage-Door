@@ -57,7 +57,7 @@
 #include "src/scheduler.h"
 #include "src/i2c.h"
 
-#define ENERGY_MODE  3
+#define ENERGY_MODE         3
 #define LETIMER_PERIOD_MS   3000    //Time period of waveform in milliseconds
 #define LETIMER_ON_MS       175     //ON time of LED in milliseconds
 

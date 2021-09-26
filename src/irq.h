@@ -12,5 +12,9 @@
 
 #include "src/gpio.h"
 
+
+
+uint32_t letimerMilliseconds();
+
 #endif
 

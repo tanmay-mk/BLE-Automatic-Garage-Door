@@ -31,7 +31,9 @@
 
 void initLETIMER(void);
 
-void TimerWaitUs(uint32_t DELAY);
+void TimerWaitUs_polled(uint32_t DELAY);
+
+void TimerWaitUs_irq(uint32_t DELAY);
 
 
 #endif
