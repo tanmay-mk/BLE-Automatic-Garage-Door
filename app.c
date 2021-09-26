@@ -134,7 +134,12 @@ SL_WEAK void app_process_action(void)
 
   evt = getNextEvent();
 
-  state_machine(evt);
+//  // DOS debugging code
+//  if (evt != 0) {
+//    LOG_INFO("E=%d", (int) evt);
+//  }
+
+    state_machine(evt);
 
 } // app_process_action()
 

@@ -116,9 +116,11 @@ void TimerWaitUs_irq(uint32_t DELAY)
 
   COMP1VALUE = CURRENT_COUNT-TICKS;
 
-  LETIMER_IntEnable(LETIMER0, LETIMER_IF_COMP1);  //Initialize Comp1 Interrupt
+  LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);  //Initialize Comp1 Interrupt
 
   LETIMER_CompareSet(LETIMER0, 1, COMP1VALUE);
+
+  LOG_INFO("C=%d,C1=%d", (int)CURRENT_COUNT, (int)COMP1VALUE);
 
   LETIMER0->IEN |= LETIMER_IF_COMP1;
 

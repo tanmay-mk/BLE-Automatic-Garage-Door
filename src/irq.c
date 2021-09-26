@@ -15,6 +15,7 @@ void LETIMER0_IRQHandler() {
 
   uint32_t flags=0;
 
+  static flag=false;
 
   // DOS for debug
   //gpioToggleLed0();
@@ -33,12 +34,20 @@ void LETIMER0_IRQHandler() {
    {
         rollOver++;      //sets the event in the scheduler
         schedulerSetEventUF();
+        // DOS: debug to determine if UF is occurring every 3 sec, it is.
+        if (flag == false) {
+            flag = true;
+            gpioLed0SetOn();
+        } else {
+            flag = false;
+            gpioLed0SetOff();
+        }
    }
 
   if (flags & LETIMER_IF_COMP1)
     {
       schedulerSetEventCOMP1();
-      LETIMER_IntDisable(LETIMER0, LETIMER_IF_COMP1);
+      LETIMER_IntDisable(LETIMER0, LETIMER_IEN_COMP1);
     }
 
 } // LETIMER0_IRQHandler()
@@ -47,6 +56,7 @@ void I2C0_IRQHandler(void)
 {
   // this can be locally defined
   I2C_TransferReturn_TypeDef transferStatus;
+
   // This shepherds the IC2 transfer along,
   // it’s a state machine! see em_i2c.c
   // It accesses global variables :
@@ -54,15 +64,17 @@ void I2C0_IRQHandler(void)
   // cmd_data
   // read_data
   transferStatus = I2C_Transfer(I2C0);
+
 if (transferStatus == i2cTransferDone)
   {
     schedulerSetEventI2CDone();
-     NVIC_DisableIRQ(I2C0_IRQn);
+     // NVIC_DisableIRQ(I2C0_IRQn); // DOS: moved to state machine
   }
 
   if (transferStatus < 0) {
   LOG_ERROR("%d", transferStatus);
   }
+
 } // I2C0_IRQHandler()
 
 
