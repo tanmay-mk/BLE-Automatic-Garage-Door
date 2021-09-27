@@ -11,7 +11,7 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
    ![Avg_current_per_period](screenshots/assignment4/avg_current_per_period.jpg)  
 
 2. What is the average current when the Si7021 is Powered Off?
-   Answer:
+   Answer: 10.10uA
    <br>Screenshot:  
    ![Avg_current_LPM_Off](screenshots/assignment4/avg_current_lpm_off.jpg)  
 
@@ -26,12 +26,17 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
    ![duration_lpm_on](screenshots/assignment4/avg_current_lpm_on.jpg)  
 
 5. Compute what the total operating time of your design for assignment 4 would be in hours, assuming a 1000mAh battery power supply?
-   Answer:
+   Answer: One operating cycle requires 25.88uA. The total battery life of design is equal to total battery power supply divided by load current consumption per cycle. 
+		Thus, 1000mAh/25.88uA = 1000/0.02588 = 38639 hours 52 minutes.  
    
 6. How has the power consumption performance of your design changed since the previous assignment?
-   Answer:
+   Answer: The power consumption is slightly increased as we are now sleeping in EM1 during the I2C transfers. During I2C transfer, the current is approximately 3mA. 
    
 7. Describe how you have tested your code to ensure you are sleeping in EM1 mode during I2C transfers.
-   Answer:
+   Answer: By looking at the energy profiler output, we can easily ensure that the MCU is sleeping in EM1 during I2C transfers. As we know, the current consumption of MCU in 
+		EM1 is approximately 3mA. By looking at the energy profiler output, we see that after providing power to SI7021 (PD15), we wait for 80mS and during these
+		80mS, the MCU sleeps in EM3. Following this wait period, we start I2C write operation, and until the operation is complete, we observe a current consumption of
+		upto 4mA. After I2C write operation, the MCU again sleeps in EM3 as we wait for another 10.8 seconds. After this operation, we proceed to I2C read operation. 
+		Again, during this operation, we see the current consumption of the MCU is around 4mA. 
    
 
