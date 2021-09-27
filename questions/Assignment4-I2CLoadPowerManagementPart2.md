@@ -6,7 +6,7 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 *Please include screenshots of the profiler window detailing each current measurement captured.  See the file Instructions to add screenshots in assignment.docx in the ECEN 5823 Student Public Folder.* 
 
 1. What is the average current per period?
-   Answer:
+   Answer: 25.88uA
    <br>Screenshot:  
    ![Avg_current_per_period]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q1.png
 
@@ -16,12 +16,12 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
    ![Avg_current_LPM_Off]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q2.png 
 
 3. What is the average current when the Si7021 is Powered On?
-   Answer:
+   Answer: 641.05uA
    <br>Screenshot:  
    ![Avg_current_LPM_Off]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q3.png
 
 4. How long is the Si7021 Powered On for 1 temperature reading?
-   Answer:
+   Answer: 102.50mS
    <br>Screenshot:  
    ![duration_lpm_on]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q4.png
 
