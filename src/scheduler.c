@@ -120,18 +120,10 @@ void state_machine (uint32_t event)
          if (event == UFevent)
            {
              // turn power on to 7021
-             gpioSensorEnSetOn();
+           //  gpioSensorEnSetOn();
              // wait 80ms for power to stabilize and 7021 to complete its power up sequence
              TimerWaitUs_irq(80000);
              nextState = STATE1_POWERUP;
-             LOG_INFO("To1");
-
-//             // DOS test code of UF and COMP1 IRQs
-//             TimerWaitUs_irq(1000000);
-//             nextState = STATE1_POWERUP;
-//             gpioLed1SetOn();
-//             LOG_INFO("To0");
-
            }
          break;
 
@@ -146,12 +138,6 @@ void state_machine (uint32_t event)
              I2C_Write();
 
              nextState = STATE2_I2C_WRITE;
-             LOG_INFO("To2");
-
-//             // DOS test code
-//             nextState = STATE0_IDLE;
-//             gpioLed1SetOff();
-//             LOG_INFO("To1\n");
 
            }
          break;
@@ -161,8 +147,6 @@ void state_machine (uint32_t event)
          if (event == I2CDoneEvent)
            {
 
-             NVIC_DisableIRQ(I2C0_IRQn);// DOS moved from irq.c
-
              //remove power management requirement to wake up from EM3
              sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
 
@@ -170,7 +154,6 @@ void state_machine (uint32_t event)
              TimerWaitUs_irq(10800);
 
              nextState = STATE3_TIMERWAIT;
-             LOG_INFO("To3");
 
            }
          break;
@@ -186,7 +169,7 @@ void state_machine (uint32_t event)
              I2C_Read();
 
              nextState = STATE4_I2C_READ;
-             LOG_INFO("To4");
+             //LOG_INFO("To4");
            }
          break;
 
@@ -196,7 +179,7 @@ void state_machine (uint32_t event)
          if(event == I2CDoneEvent)
            {
 
-             NVIC_DisableIRQ(I2C0_IRQn);// DOS moved from irq.c
+
 
              //remove power management requirement to wake up from EM3
              sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
@@ -210,7 +193,7 @@ void state_machine (uint32_t event)
 
              // done with I2C for this measurement cycle
              nextState = STATE0_IDLE;
-             LOG_INFO("To0");
+             //LOG_INFO("To0");
 
            }
          break;

@@ -30,7 +30,7 @@ void InitI2C()
   init.i2cClhr         = i2cClockHLRStandard;
 
   I2CSPM_Init(&init);
-//DOS: do this in your state machine   NVIC_EnableIRQ(I2C0_IRQn);
+  NVIC_EnableIRQ(I2C0_IRQn);
 
 }
 

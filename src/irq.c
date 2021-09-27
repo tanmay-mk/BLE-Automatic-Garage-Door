@@ -15,7 +15,7 @@ void LETIMER0_IRQHandler() {
 
   uint32_t flags=0;
 
-  static flag=false;
+//  static flag=false;
 
   // DOS for debug
   //gpioToggleLed0();
@@ -33,15 +33,16 @@ void LETIMER0_IRQHandler() {
   if (flags & LETIMER_IF_UF)
    {
         rollOver++;      //sets the event in the scheduler
+        gpioSensorEnSetOn();
         schedulerSetEventUF();
         // DOS: debug to determine if UF is occurring every 3 sec, it is.
-        if (flag == false) {
+       /* if (flag == false) {
             flag = true;
             gpioLed0SetOn();
         } else {
             flag = false;
             gpioLed0SetOff();
-        }
+        }*/
    }
 
   if (flags & LETIMER_IF_COMP1)
@@ -68,7 +69,7 @@ void I2C0_IRQHandler(void)
 if (transferStatus == i2cTransferDone)
   {
     schedulerSetEventI2CDone();
-     // NVIC_DisableIRQ(I2C0_IRQn); // DOS: moved to state machine
+    NVIC_DisableIRQ(I2C0_IRQn); // DOS: moved to state machine
   }
 
   if (transferStatus < 0) {

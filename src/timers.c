@@ -32,7 +32,6 @@ void initLETIMER(void)
      LETIMER_Init(LETIMER0, &letimerInit); // Initialize and enable LETIMER
 
      LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);   //Initialize Underflow Interrupt
-     //LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);  //Initialize Comp1 Interrupt
 
     //enable LETIMER
     LETIMER_Enable(LETIMER0, true);
@@ -94,11 +93,6 @@ void TimerWaitUs_polled(uint32_t DELAY)
 
 } // TimerWaitUs_polled()
 
-// DOS: Why are you setting up COMP1 register? This routine is supposed to poll on the
-//      counter value? This is what we will do in A4
-//  LETIMER_CompareSet(LETIMER0,1,MAX_COUNT);
-//  LETIMER_IntEnable(LETIMER0,LETIMER_IF_COMP1);     // Enable interrupt for COMP1
-
 void TimerWaitUs_irq(uint32_t DELAY)
 {
   uint32_t CURRENT_COUNT, TICKS, COMP1VALUE;
@@ -120,7 +114,7 @@ void TimerWaitUs_irq(uint32_t DELAY)
 
   LETIMER_CompareSet(LETIMER0, 1, COMP1VALUE);
 
-  LOG_INFO("C=%d,C1=%d", (int)CURRENT_COUNT, (int)COMP1VALUE);
+  //LOG_INFO("C=%d,C1=%d", (int)CURRENT_COUNT, (int)COMP1VALUE);
 
   LETIMER0->IEN |= LETIMER_IF_COMP1;
 

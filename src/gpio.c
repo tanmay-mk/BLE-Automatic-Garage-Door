@@ -35,7 +35,7 @@ void gpioInit()
 	GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
 
 	// DOS: SENSOR_ENABLE GPIO
-	GPIO_PinModeSet(Si7021SENSOR_EN_port, Si7021SENSOR_EN_pin, gpioModePushPull, false);
+	GPIO_PinModeSet(gpioPortD, 15, gpioModePushPull, false);
 
 } // gpioInit()
 
@@ -70,13 +70,13 @@ void gpioLed1SetOff()
 // DISP_ENABLE on the main PCB
 void gpioSensorEnSetOn()
 {
-  GPIO_PinOutSet(Si7021SENSOR_EN_port, Si7021SENSOR_EN_pin);
+  GPIO_PinOutSet(gpioPortD, 15);
 }
 
 // turn off sensor enable
 void gpioSensorEnSetOff()
 {
-  GPIO_PinOutClear(Si7021SENSOR_EN_port, Si7021SENSOR_EN_pin);
+  GPIO_PinOutClear(gpioPortD, 15);
   //LOG_ERROR("SENSOR_ENABLE is tied to DISP_ENABLE on the main PCB, not setting to off");
 }
 
