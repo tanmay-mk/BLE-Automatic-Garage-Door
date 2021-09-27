@@ -8,22 +8,22 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 1. What is the average current per period?
    Answer:
    <br>Screenshot:  
-   ![Avg_current_per_period](screenshots/assignment4/avg_current_per_period.jpg)  
+   ![Avg_current_per_period]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q1.png
 
 2. What is the average current when the Si7021 is Powered Off?
    Answer: 10.10uA
    <br>Screenshot:  
-   ![Avg_current_LPM_Off](screenshots/assignment4/avg_current_lpm_off.jpg)  
+   ![Avg_current_LPM_Off]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q2.png 
 
 3. What is the average current when the Si7021 is Powered On?
    Answer:
    <br>Screenshot:  
-   ![Avg_current_LPM_Off](screenshots/assignment4/avg_current_lpm_on.jpg)  
+   ![Avg_current_LPM_Off]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q3.png
 
 4. How long is the Si7021 Powered On for 1 temperature reading?
    Answer:
    <br>Screenshot:  
-   ![duration_lpm_on](screenshots/assignment4/avg_current_lpm_on.jpg)  
+   ![duration_lpm_on]https://github.com/CU-ECEN-5823/ecen5823-assignment4-tanmay-mk/blob/main/Assignment%204%20Screenshots/Q4.png
 
 5. Compute what the total operating time of your design for assignment 4 would be in hours, assuming a 1000mAh battery power supply?
    Answer: One operating cycle requires 25.88uA. The total battery life of design is equal to total battery power supply divided by load current consumption per cycle. 
