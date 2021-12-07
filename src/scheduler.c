@@ -5,11 +5,13 @@
  *
  */
 
+/*  LIBRARY FILES   */
 #include "em_letimer.h"
 #include <em_core.h>
 #include <stdint.h>
 #include <stdio.h>
 
+/*  OTHER FILES TO BE INCLUDED  */
 #include "ble.h"
 #include "lcd.h"
 #include "irq.h"
@@ -22,12 +24,34 @@
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
 
-uint32_t eventFlag=0; // my private scheduler data structure to maintain up to 32 events as single bits
-
+/*  GLOBAL VARIABLES  */
+/*
+ * t1             = LETIMER0 value when rising edge echo pulse GPIO Interrupt is received
+ * t2             = LETIMER0 value when rising edge echo pulse GPIO Interrupt is received
+ * difference     = time difference between two GPIO interrupts
+ * duration       = convert LETIMER difference to microseconds
+ * distance       = distance in cm
+ */
 int t1 = 0, t2 = 0, difference=0;
 int  duration = 0, distance = 0;
 
+/*
+ * @brief: turns on stepper motor in the intended direction
+ *
+ * @parameters: direction : clockwise = 0
+ *                          counter clockwise = 1
+ *
+ * @returns: none
+ */
 static void turn_on_stepper_motor (int direction);
+
+/*
+ * @brief: turns off stepper motor
+ *
+ * @parameters: none
+ *
+ * @returns: none
+ */
 static void turn_off_stepper_motor ();
 
 
@@ -127,6 +151,8 @@ void distance_state_machine(sl_bt_msg_t *evt)
                                                    sizeof(distance),
                                                    &distance);
 
+        if (status) {} //to avoid compiler warning
+
         printf("%ld sec: DISTANCE: %.02f cm\n\r", letimerMilliseconds(), (float) distance);
         if (distance < 100)
           {
@@ -158,7 +184,7 @@ static void turn_on_stepper_motor(int direction)
       TimerWaitUs_polled(2500);
       clockwise_step4();
       TimerWaitUs_polled(2500);
-  }
+  } //if
 
   if (direction==COUNTER_CLOCKWISE)
     {
@@ -170,37 +196,37 @@ static void turn_on_stepper_motor(int direction)
       TimerWaitUs_polled(2500);
       counter_clockwise_step4();
       TimerWaitUs_polled(2500);
-    }
-}
+    } //if()
+} //turn_on_stepper_motor()
 
-static void turn_off_stepper_motor ()
+static void turn_off_stepper_motor()
 {
   GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
   GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
   GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
   GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
-}
+} //turn_off_stepper_motor()
 
 void operate_door()
 {
   displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Opening the door");
-  printf("%d sec: CAUTION: DOOR OPENING\n\r", letimerMilliseconds());
+  printf("%ld sec: CAUTION: DOOR OPENING\n\r", letimerMilliseconds());
   for (int i = 0; i<1000; i++)
     {
       turn_on_stepper_motor(CLOCKWISE);
     }
-  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "car is being parked");
+  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Car is being parked");
   turn_off_stepper_motor();
   for(int i = 0; i<1000; i++)
   {
      TimerWaitUs_polled(3000);
   }
   displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Closing the door");
-  printf("%d sec: CAUTION: DOOR CLOSING\n\r", letimerMilliseconds());
+  printf("%ld sec: CAUTION: DOOR CLOSING\n\r", letimerMilliseconds());
   for (int i = 0; i<1000; i++)
     {
       turn_on_stepper_motor(COUNTER_CLOCKWISE);
     }
   turn_off_stepper_motor();
   displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Car is parked.");
-}
+} //operate_door()

@@ -56,28 +56,12 @@
 #include "src/irq.h"
 #include "src/scheduler.h"
 
-
-#define ENERGY_MODE         2
 #define LETIMER_PERIOD_MS   1000            //Time period of waveform in milliseconds
 
 #define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
 #define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1000 Hz
 
-#if ENERGY_MODE==0
-  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EMO as LFXO
-#endif
-
-#if ENERGY_MODE==1
-  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM1 as LFXO
-#endif
-
-#if ENERGY_MODE==2
-  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM2 as LFXO
-#endif
-
-#if ENERGY_MODE==3
-  #define CLK_FREQ      ULFRCO_FREQ         // Defining the frequency for EM3 as ULFRCO
-#endif
+#define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM2 as LFXO
 
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
@@ -92,13 +76,10 @@
 //   up the MCU from the call to sl_power_manager_sleep() in the main while (1)
 //   loop.
 
-#if (ENERGY_MODE == 0)
-    //Used only for EM0
-    #define APP_IS_OK_TO_SLEEP      (false)
-#else
-    //Used for EM1, EM2 & EM3
-    #define APP_IS_OK_TO_SLEEP      (true)
-#endif
+
+//Used for EM1, EM2 & EM3
+#define APP_IS_OK_TO_SLEEP      (true)
+
 
 // Return values for app_sleep_on_isr_exit():
 //   SL_POWER_MANAGER_IGNORE; // The module did not trigger an ISR and it doesn't want to contribute to the decision

@@ -1,5 +1,14 @@
+/*
+ * File Name: ble.h
+ *
+ * Author:  Tanmay Mahendra Kothale (tanmay-mk)
+ *
+ */
 
+#ifndef _BLE_H_
+#define _BLE_H_
 
+/*  LIBRARY FILES   */
 #include "sl_bt_api.h"
 #include <stdbool.h>
 #include "em_common.h"
@@ -8,6 +17,8 @@
 #include "app_assert.h"
 #include "sl_bluetooth.h"
 #include "gatt_db.h"
+
+/*  MACROS  */
 
 #define UINT8_TO_BITSTREAM(p, n) { *(p)++ = (uint8_t)(n); }
 
@@ -34,10 +45,29 @@ uint32_t  passkey;
 
 } ble_data_structure_t;
 
+/*  BOOLEAN VALUES TO KEEP TRACK OF BLUETOOTH CHARACTERISTICS */
 extern volatile bool indications,
                      ongoing_operation_indication,
                      bonded;
 
+/*  FUNCTION PROTOTYPES   */
+/*------------------------------------------------------------------------------
+ * @brief: handles bluetooth events
+ *
+ * @parameters: evt:  events that are occur after every change in bluetooth
+ *                    characteristics
+ *
+ * @returns: none
+ ------------------------------------------------------------------------------*/
 void handle_ble_event(sl_bt_msg_t *evt);
-float gattFloat32ToInt(const uint8_t *value_start_little_endian);
+
+/*------------------------------------------------------------------------------
+ * @brief: returns the data stored in the BLE data structure
+ *
+ * @parameters: none
+ *
+ * @returns: none
+ ------------------------------------------------------------------------------*/
 ble_data_structure_t* getBLEdata(void);
+
+#endif /*_BLE_H_*/

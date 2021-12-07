@@ -63,7 +63,7 @@ void TimerWaitUs_irq(uint32_t DELAY)
     LETIMER_CompareSet(LETIMER0, 1, COMP1VALUE);
 
     LETIMER0->IEN |= LETIMER_IF_COMP1;
-}
+} //TimerWaitUs_irq
 
 void TimerWaitUs_polled(uint32_t DELAY)
 {
@@ -88,4 +88,4 @@ void TimerWaitUs_polled(uint32_t DELAY)
             CURRENT_COUNT = LETIMER_CounterGet(LETIMER0); // get new CNT value
         }
     }
-}
+} //TimerWaitUs_polled

@@ -1,5 +1,15 @@
-#include "ble.h"
+/*
+ * File Name: ble.c
+ *
+ * Author:  Tanmay Mahendra Kothale (tanmay-mk)
+ *
+ */
+
+/*  LIBRARY FILES   */
 #include "gatt_db.h"
+
+/*  OTHER FILES TO BE INCLUDED  */
+#include "ble.h"
 #include "lcd.h"
 #include "scheduler.h"
 
@@ -7,61 +17,32 @@
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
 
-int power(int num, int exponent)
-{
-  int result = 1;
-  while(exponent){
-      result *= num;
-      exponent--;
-  }
-  return result;
-}
+/*  MACROS  */
+#define ADVERTISE_INTERVAL_MIN        400   /*400*0.625ms = 250ms*/
+#define ADVERTISE_INTERVAL_MAX        400   /*400*0.625ms = 250ms*/
+#define ADVERTISE_MAX_EVENTS          0
+#define ADVERTISE_DURATION            0
 
-// Original code from Dan Walkes. I (Sluiter) fixed a sign extension bug with the mantissa.
-// convert IEEE-11073 32-bit float to integer
-float gattFloat32ToInt(const uint8_t *value_start_little_endian)
-{
-  uint8_t signByte = 0;
-  int32_t mantissa;
-  // data format pointed at by value_start_little_endian is:
-  // [0] = contains the flags byte
-  // [3][2][1] = mantissa (24-bit 2’s complement)
-  // [4] = exponent (8-bit 2’s complement)
-  int8_t exponent = (int8_t)value_start_little_endian[4];
-  // sign extend the mantissa value if the mantissa is negative
-  if (value_start_little_endian[3] & 0x80) { // msb of [3] is the sign of the mantissa
-  signByte = 0xFF;
-  }
-  mantissa = (int32_t) (value_start_little_endian[1] << 0) |
-  (value_start_little_endian[2] << 8) |
-  (value_start_little_endian[3] << 16) |
-  (signByte << 24) ;
-
-  float temperature = 0;
-  if(exponent < 0){
-      exponent = -1 * exponent;
-      temperature = (((float)1/power(10, exponent)) * mantissa);
-  }
-  else{
-      temperature = (power(10, exponent) * mantissa);
-  }
-  //printf("Tempearture: %f\n\r",temperature);
-
-  return temperature;
-} // gattFloat32ToInt
-
+#define MIN_INTERVAL                  60    /*60*1.25ms = 75ms*/
+#define MAX_INTERVAL                  60    /*60*1.25ms = 75ms*/
+#define SLAVE_LATENCY                 4     /*4*75ms = 300ms*/
+#define SUPERVISORY_TIMEOUT           4515  /*10ms * 4515 = 45150ms*/
+#define MIN_CE_LENGTH                 0
+#define MAX_CE_LENGTH                 0xFFFF
 
 // BLE private data
 ble_data_structure_t ble_data;
 
+/*  GLOBAL VARIABLES  */
 bool volatile indications, bonded, ongoing_operation_indication;
 
-ble_data_structure_t* getBLEdata(){
+ble_data_structure_t* getBLEdata()
+{
   return &ble_data;
 }
 
-void handle_ble_event(sl_bt_msg_t *evt){
-
+void handle_ble_event(sl_bt_msg_t *evt)
+{
   ble_data_structure_t* data = getBLEdata();
   sl_status_t sc = 0;
   switch (SL_BT_MSG_ID(evt->header)) {
@@ -85,7 +66,8 @@ void handle_ble_event(sl_bt_msg_t *evt){
       //get address of the advertising ble device
       sc = sl_bt_system_get_identity_address(&data->myAddress, &data->addressType);
 
-      //Configure the security manager with MITM protection, Encryption requires bonding, Secure connections only
+      //Configure the security manager with MITM protection,
+      //Encryption requires bonding, Secure connections only
       sc = sl_bt_sm_configure(0x0F, sl_bt_sm_io_capability_displayyesno);
 
       //delete the data of previously bonded devices
@@ -96,10 +78,10 @@ void handle_ble_event(sl_bt_msg_t *evt){
 
       //set parameters for advertising
       sc = sl_bt_advertiser_set_timing(data->advertisingSetHandle,
-                                       400,
-                                       400,
-                                       0,
-                                       0); // convert to macros
+                                       ADVERTISE_INTERVAL_MIN,
+                                       ADVERTISE_INTERVAL_MAX,
+                                       ADVERTISE_DURATION,
+                                       ADVERTISE_MAX_EVENTS);
 
       //start advertising
       sc = sl_bt_advertiser_start(data->advertisingSetHandle,
@@ -110,23 +92,24 @@ void handle_ble_event(sl_bt_msg_t *evt){
       displayPrintf(DISPLAY_ROW_CONNECTION,"%s", "Advertising");
 
       //display device address on the server device
-      displayPrintf(DISPLAY_ROW_BTADDR, "%x:%x:%x:%x:%x:%x",data->myAddress.addr[0],data->myAddress.addr[1],
+      displayPrintf(DISPLAY_ROW_BTADDR, "%x:%x:%x:%x:%x:%x",
+                    data->myAddress.addr[0], data->myAddress.addr[1],
                     data->myAddress.addr[2], data->myAddress.addr[3],
                     data->myAddress.addr[4], data->myAddress.addr[5]);
 
       if(sc == SL_STATUS_OK)
       {
-          printf("%d sec: BOOT COMPLETE, WAITING FOR CONNECTION!\n\r", letimerMilliseconds());
+          printf("%ld sec: BOOT COMPLETE, WAITING FOR CONNECTION!\n\r", letimerMilliseconds());
       }
       else{
-          printf("%d sec: BOOT FAILED WITH ERROR CODE %lu.\n\r",letimerMilliseconds(), sc);
+          printf("%ld sec: BOOT FAILED WITH ERROR CODE %lu.\n\r",letimerMilliseconds(), sc);
       }
       break;
-
+/*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_system_soft_timer_id:
       displayUpdate();
       break;
-
+/*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_connection_opened_id:
 
       //clear the status flag variable
@@ -137,20 +120,19 @@ void handle_ble_event(sl_bt_msg_t *evt){
 
       //set parameters for the sending the data to client
       sc = sl_bt_connection_set_parameters(evt->data.evt_connection_opened.connection,
-                                           60,
-                                           60,
-                                           4,
-                                           4515,
-                                           0,
-                                           0xFFFF);
+                                           MIN_INTERVAL,
+                                           MAX_INTERVAL,
+                                           SLAVE_LATENCY,
+                                           SUPERVISORY_TIMEOUT,
+                                           MIN_CE_LENGTH,
+                                           MIN_CE_LENGTH);
 
-      printf("%d sec: CONNECTION OPENED!\n\r", letimerMilliseconds());
+      printf("%ld sec: CONNECTION OPENED!\n\r", letimerMilliseconds());
 
       displayPrintf(DISPLAY_ROW_CONNECTION,"%s", "Connected");
 
       break;
-
-
+/*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_connection_closed_id:
 
       //clear status flag variable
@@ -164,7 +146,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
                                   sl_bt_advertiser_general_discoverable,
                                   sl_bt_advertiser_connectable_scannable);
 
-      printf("%d sec: CONNECTION CLOSED!\n\r", letimerMilliseconds());
+      printf("%ld sec: CONNECTION CLOSED!\n\r", letimerMilliseconds());
 
       displayPrintf(DISPLAY_ROW_CONNECTION,"%s", "Advertising");
 
@@ -186,7 +168,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
               //indications are enabled
               indications = 1;
               data->connectionHandle =  evt->data.evt_gatt_server_characteristic_status.connection;
-              printf("%d sec: Distance Indications Enabled\n\r", letimerMilliseconds());
+              printf("%ld sec: Distance Indications Enabled\n\r", letimerMilliseconds());
               gpioLed0SetOn();
             }
           //Indications are disabled
@@ -195,7 +177,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
               indications = 0;
               ongoing_operation_indication = 0;
               displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s", "");
-              printf("%d sec: Distance Indications Disabled\n\r",letimerMilliseconds());
+              printf("%ld sec: Distance Indications Disabled\n\r",letimerMilliseconds());
               gpioLed0SetOff();
             }
         }
@@ -207,20 +189,19 @@ void handle_ble_event(sl_bt_msg_t *evt){
       else
       {
               ongoing_operation_indication = 0;
-              printf("%d sec: Distance Indications Disabled\n\r", letimerMilliseconds());
+              printf("%ld sec: Distance Indications Disabled\n\r", letimerMilliseconds());
               displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s", "");
-              gpioLed1SetOff();
       }
       break;
 /*---------------------------------------------------------------------------------------------*/
     //an indication to request to display the passkey to the user
   case sl_bt_evt_sm_passkey_display_id:
      displayPrintf(DISPLAY_ROW_PASSKEY,"Passkey = %lu",evt->data.evt_sm_passkey_display.passkey);
-     printf("%d sec: PASSKEY DISPLAYED: %lu\n\r",  letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
+     printf("%ld sec: PASSKEY DISPLAYED: %lu\n\r",  letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
     break;
 /*---------------------------------------------------------------------------------------------*/
   case sl_bt_evt_sm_passkey_request_id:
-    printf("%d sec: PASSKEY REQUESTED.\n\r",  letimerMilliseconds());
+    printf("%ld sec: PASSKEY REQUESTED.\n\r",  letimerMilliseconds());
     break;
 /*---------------------------------------------------------------------------------------------*/
   //Indicates a request for passkey display and confirmation by the user
@@ -230,7 +211,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
     displayPrintf(DISPLAY_ROW_PASSKEY,"%lu",evt->data.evt_sm_confirm_passkey.passkey);
     sc = sl_bt_sm_passkey_confirm(data->passkey,1);
     //displayPrintf(DISPLAY_ROW_ACTION,"%s","Press PB0 to confirm.");
-    printf("%d sec: PASSKEY TO BE CONFIRMED: %lu\n\r", letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
+    printf("%ld sec: PASSKEY TO BE CONFIRMED: %lu\n\r", letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
     break;
 /*---------------------------------------------------------------------------------------------*/
     //Triggered after the pairing or bonding procedure is successfully completed
@@ -240,14 +221,14 @@ void handle_ble_event(sl_bt_msg_t *evt){
      displayPrintf(DISPLAY_ROW_9,"%s", "");
      displayPrintf(DISPLAY_ROW_ACTION,"%s","");
      displayPrintf(DISPLAY_ROW_PASSKEY,"%s","");
-     printf("%d sec: BONDING COMPLETE WITH CLIENT\n\r", letimerMilliseconds());
+     printf("%ld sec: BONDING COMPLETE WITH CLIENT\n\r", letimerMilliseconds());
      break;
 /*---------------------------------------------------------------------------------------------*/
    //Indicates a user request to display that the new bonding request is received and for the user to confirm the request
    case sl_bt_evt_sm_confirm_bonding_id:
      sc = 0;
      sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-     printf("%d sec: BONDING REQUESTED BY CLIENT.\n\r", letimerMilliseconds());
+     printf("%ld sec: BONDING REQUESTED BY CLIENT.\n\r", letimerMilliseconds());
      break;
 /*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_gatt_server_indication_timeout_id:
@@ -258,7 +239,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
     case sl_bt_evt_sm_bonding_failed_id:
       sc = 0;
       sc = sl_bt_connection_close(evt->data.evt_sm_bonding_failed.connection);
-      printf("%d sec: BONDING WITH CLIENT FAILED\n\r",letimerMilliseconds());
+      printf("%ld sec: BONDING WITH CLIENT FAILED\n\r",letimerMilliseconds());
       break;
 /*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_connection_parameters_id:
@@ -269,5 +250,5 @@ void handle_ble_event(sl_bt_msg_t *evt){
       data->evt = sl_bt_evt_system_external_signal_id;
       break;
 /*---------------------------------------------------------------------------------------------*/
-  }
-}
+  } //switch
+} //handle_ble_event
