@@ -116,10 +116,10 @@ void handle_ble_event(sl_bt_msg_t *evt){
 
       if(sc == SL_STATUS_OK)
       {
-          printf("BOOT COMPLETE, WAITING FOR CONNECTION!\n\r");
+          printf("%d sec: BOOT COMPLETE, WAITING FOR CONNECTION!\n\r", letimerMilliseconds());
       }
       else{
-          printf("BOOT FAILED WITH ERROR CODE %lu.\n\r",sc);
+          printf("%d sec: BOOT FAILED WITH ERROR CODE %lu.\n\r",letimerMilliseconds(), sc);
       }
       break;
 
@@ -144,7 +144,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
                                            0,
                                            0xFFFF);
 
-      printf("CONNECTION OPENED!\n\r");
+      printf("%d sec: CONNECTION OPENED!\n\r", letimerMilliseconds());
 
       displayPrintf(DISPLAY_ROW_CONNECTION,"%s", "Connected");
 
@@ -164,7 +164,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
                                   sl_bt_advertiser_general_discoverable,
                                   sl_bt_advertiser_connectable_scannable);
 
-      printf("CONNECTION CLOSED!\n\r");
+      printf("%d sec: CONNECTION CLOSED!\n\r", letimerMilliseconds());
 
       displayPrintf(DISPLAY_ROW_CONNECTION,"%s", "Advertising");
 
@@ -186,7 +186,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
               //indications are enabled
               indications = 1;
               data->connectionHandle =  evt->data.evt_gatt_server_characteristic_status.connection;
-              printf("Distance Indications Enabled\n\r");
+              printf("%d sec: Distance Indications Enabled\n\r", letimerMilliseconds());
               gpioLed0SetOn();
             }
           //Indications are disabled
@@ -195,7 +195,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
               indications = 0;
               ongoing_operation_indication = 0;
               displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s", "");
-              printf("Distance Indications Disabled\n\r");
+              printf("%d sec: Distance Indications Disabled\n\r",letimerMilliseconds());
               gpioLed0SetOff();
             }
         }
@@ -207,7 +207,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
       else
       {
               ongoing_operation_indication = 0;
-              printf("Distance Indications Disabled\n\r");
+              printf("%d sec: Distance Indications Disabled\n\r", letimerMilliseconds());
               displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s", "");
               gpioLed1SetOff();
       }
@@ -216,11 +216,11 @@ void handle_ble_event(sl_bt_msg_t *evt){
     //an indication to request to display the passkey to the user
   case sl_bt_evt_sm_passkey_display_id:
      displayPrintf(DISPLAY_ROW_PASSKEY,"Passkey = %lu",evt->data.evt_sm_passkey_display.passkey);
-     printf("PASSKEY DISPLAYED: %lu\n\r", evt->data.evt_sm_passkey_display.passkey);
+     printf("%d sec: PASSKEY DISPLAYED: %lu\n\r",  letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
     break;
 /*---------------------------------------------------------------------------------------------*/
   case sl_bt_evt_sm_passkey_request_id:
-    printf("PASSKEY REQUESTED.\n\r");
+    printf("%d sec: PASSKEY REQUESTED.\n\r",  letimerMilliseconds());
     break;
 /*---------------------------------------------------------------------------------------------*/
   //Indicates a request for passkey display and confirmation by the user
@@ -230,7 +230,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
     displayPrintf(DISPLAY_ROW_PASSKEY,"%lu",evt->data.evt_sm_confirm_passkey.passkey);
     sc = sl_bt_sm_passkey_confirm(data->passkey,1);
     //displayPrintf(DISPLAY_ROW_ACTION,"%s","Press PB0 to confirm.");
-    printf("PASSKEY TO BE CONFIRMED: %lu\n\r", evt->data.evt_sm_passkey_display.passkey);
+    printf("%d sec: PASSKEY TO BE CONFIRMED: %lu\n\r", letimerMilliseconds(), evt->data.evt_sm_passkey_display.passkey);
     break;
 /*---------------------------------------------------------------------------------------------*/
     //Triggered after the pairing or bonding procedure is successfully completed
@@ -240,14 +240,14 @@ void handle_ble_event(sl_bt_msg_t *evt){
      displayPrintf(DISPLAY_ROW_9,"%s", "");
      displayPrintf(DISPLAY_ROW_ACTION,"%s","");
      displayPrintf(DISPLAY_ROW_PASSKEY,"%s","");
-     printf("BONDING COMPLETE WITH CLIENT\n\r");
+     printf("%d sec: BONDING COMPLETE WITH CLIENT\n\r", letimerMilliseconds());
      break;
 /*---------------------------------------------------------------------------------------------*/
    //Indicates a user request to display that the new bonding request is received and for the user to confirm the request
    case sl_bt_evt_sm_confirm_bonding_id:
      sc = 0;
      sc = sl_bt_sm_bonding_confirm(evt->data.evt_sm_confirm_bonding.connection, 1);
-     printf("BONDING REQUESTED BY CLIENT.\n\r");
+     printf("%d sec: BONDING REQUESTED BY CLIENT.\n\r", letimerMilliseconds());
      break;
 /*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_gatt_server_indication_timeout_id:
@@ -258,7 +258,7 @@ void handle_ble_event(sl_bt_msg_t *evt){
     case sl_bt_evt_sm_bonding_failed_id:
       sc = 0;
       sc = sl_bt_connection_close(evt->data.evt_sm_bonding_failed.connection);
-      printf("BONDING WITH CLIENT FAILED\n\r");
+      printf("%d sec: BONDING WITH CLIENT FAILED\n\r",letimerMilliseconds());
       break;
 /*---------------------------------------------------------------------------------------------*/
     case sl_bt_evt_connection_parameters_id:

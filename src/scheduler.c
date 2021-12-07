@@ -1,14 +1,22 @@
-#include "scheduler.h"
-#include "timers.h"
-#include "app.h"
-#include "oscillators.h"
+/*
+ * File Name: scheduler.c
+ *
+ * Author:  Tanmay Mahendra Kothale (tanmay-mk)
+ *
+ */
+
 #include "em_letimer.h"
 #include <em_core.h>
 #include <stdint.h>
 #include <stdio.h>
+
 #include "ble.h"
 #include "lcd.h"
 #include "irq.h"
+#include "scheduler.h"
+#include "timers.h"
+#include "app.h"
+#include "oscillators.h"
 
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
@@ -66,12 +74,10 @@ void distance_state_machine(sl_bt_msg_t *evt)
     {
 
       case STATE_IDLE:
-        //printf("1\n\r");
         nextState = STATE_IDLE;
 
         if (running_event & UFevent)
           {
-            //printf("2\n\r");
             TRIG_PIN_HIGH();
             TimerWaitUs_irq(10);
             nextState = STATE_TRIG_START;
@@ -79,24 +85,20 @@ void distance_state_machine(sl_bt_msg_t *evt)
         break;
 
       case STATE_TRIG_START:
-        //printf("3\n\r");
         nextState = STATE_TRIG_START;
 
         if (running_event & COMP1Event)
           {
-            //printf("4\n\r");
             TRIG_PIN_LOW();
             nextState = STATE_ECHO_START;
           }
         break;
 
       case STATE_ECHO_START:
-        //printf("5\n\r");
         nextState = STATE_ECHO_START;
 
         if(running_event & GPIOEvent)
           {
-            //printf("6\n\r");
             t1 = LETIMER_CounterGet(LETIMER0);
             nextState = STATE_ECHO_END;
           }
@@ -104,19 +106,16 @@ void distance_state_machine(sl_bt_msg_t *evt)
 
 
       case STATE_ECHO_END:
-        //printf("7\n\r");
         nextState = STATE_ECHO_END;
 
         if(running_event & GPIOEvent)
           {
-            //printf("8\n\r");
             t2 = LETIMER_CounterGet(LETIMER0);
             nextState = STATE_CALCULATE_DISTANCE;
           }
         break;
 
       case STATE_CALCULATE_DISTANCE:
-        //printf("9\n\r");
         difference = t1-t2;
         duration = (difference*1000000)>>13; //divide by 8192, 2^13 = 8192
         distance = (float) duration/58;
@@ -140,9 +139,10 @@ void distance_state_machine(sl_bt_msg_t *evt)
 
       default:
         break;
+
     } //switch
-  }
-}   //distance state machine
+  }  //if (indications)
+}   //distance state machine()
 
 
 
@@ -183,20 +183,24 @@ static void turn_off_stepper_motor ()
 
 void operate_door()
 {
-  printf("CAUTION: DOOR OPENING\n\r");
+  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Opening the door");
+  printf("%d sec: CAUTION: DOOR OPENING\n\r", letimerMilliseconds());
   for (int i = 0; i<1000; i++)
     {
       turn_on_stepper_motor(CLOCKWISE);
     }
+  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "car is being parked");
   turn_off_stepper_motor();
   for(int i = 0; i<1000; i++)
   {
      TimerWaitUs_polled(3000);
   }
-  printf("CAUTION: DOOR CLOSING\n\r");
+  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Closing the door");
+  printf("%d sec: CAUTION: DOOR CLOSING\n\r", letimerMilliseconds());
   for (int i = 0; i<1000; i++)
     {
       turn_on_stepper_motor(COUNTER_CLOCKWISE);
     }
   turn_off_stepper_motor();
+  displayPrintf(DISPLAY_ROW_TEMPVALUE, "%s" , "Car is parked.");
 }

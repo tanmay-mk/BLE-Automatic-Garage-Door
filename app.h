@@ -58,21 +58,21 @@
 
 
 #define ENERGY_MODE         2
-#define LETIMER_PERIOD_MS   500    //Time period of waveform in milliseconds
+#define LETIMER_PERIOD_MS   1000            //Time period of waveform in milliseconds
 
 #define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
 #define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1000 Hz
 
 #if ENERGY_MODE==0
-  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EMO as LFXO
+  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EMO as LFXO
 #endif
 
 #if ENERGY_MODE==1
-  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EM1 as LFXO
+  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM1 as LFXO
 #endif
 
 #if ENERGY_MODE==2
-  #define CLK_FREQ      LFXO_FREQ         // Defining the frequency for EM2 as LFXO
+  #define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM2 as LFXO
 #endif
 
 #if ENERGY_MODE==3
