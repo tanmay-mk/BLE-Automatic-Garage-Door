@@ -33,6 +33,9 @@
  *              It is to be used only for ECEN 5823 "IoT Embedded Firmware".
  *              The MSLA referenced above is in effect.
  *
+ * Date: December 7, 2021
+ * Changes made by Tanmay Mahendra Kothale (Tanmay.Kothale@colorado.edu)
+ *    Minor changes made for course project
  ******************************************************************************/
 
 

@@ -33,6 +33,10 @@
  *              It is to be used only for ECEN 5823 "IoT Embedded Firmware".
  *              The MSLA referenced above is in effect.
  *
+ * Date: December 7, 2021
+ * Changes made by Tanmay Mahendra Kothale (Tanmay.Kothale@colorado.edu)
+ *    Minor changes made for course project
+ *
  ******************************************************************************/
 
 #ifndef APP_H
@@ -56,12 +60,11 @@
 #include "src/irq.h"
 #include "src/scheduler.h"
 
-#define LETIMER_PERIOD_MS   1000            //Time period of waveform in milliseconds
+#define LETIMER_PERIOD_MS   1000                      //Time period of waveform in milliseconds
 
-#define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
-#define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1000 Hz
+#define LFXO_FREQ           32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
 
-#define CLK_FREQ      LFXO_FREQ           // Defining the frequency for EM2 as LFXO
+#define CLK_FREQ            LFXO_FREQ                 // Defining the frequency for EM2 as LFXO
 
 
 // See: https://docs.silabs.com/gecko-platform/latest/service/power_manager/overview
@@ -105,12 +108,12 @@
 #endif // defined(SL_CATALOG_POWER_MANAGER_PRESENT)
 
 //static void delayApprox(int delay);
-/**************************************************************************//**
+/******************************************************************************
  * Application Init.
  *****************************************************************************/
 void app_init(void);
 
-/**************************************************************************//**
+/******************************************************************************
  * Application Process Action.
  *****************************************************************************/
 void app_process_action(void);
