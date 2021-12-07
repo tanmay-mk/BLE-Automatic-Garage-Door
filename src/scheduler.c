@@ -6,200 +6,197 @@
 #include <em_core.h>
 #include <stdint.h>
 #include <stdio.h>
-#include "i2c.h"
-
+#include "ble.h"
+#include "lcd.h"
+#include "irq.h"
 
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
 
-
 uint32_t eventFlag=0; // my private scheduler data structure to maintain up to 32 events as single bits
 
+int t1 = 0, t2 = 0, difference=0;
+int  duration = 0, distance = 0;
+
+static void turn_on_stepper_motor (int direction);
+static void turn_off_stepper_motor ();
+
+
+void schedulerSetEventGPIOEvent()
+{
+  CORE_DECLARE_IRQ_STATE;
+  CORE_ENTER_CRITICAL();
+  sl_bt_external_signal(GPIOEvent);
+  CORE_EXIT_CRITICAL();
+}
 
 void schedulerSetEventUF()     //sets the event in the scheduler
 {
   CORE_DECLARE_IRQ_STATE;
-
-  // DOS for debug
-  //gpioToggleLed0();
-
   CORE_ENTER_CRITICAL();
-  eventFlag |= UFevent; // this is a RMW
+  sl_bt_external_signal(UFevent);
   CORE_EXIT_CRITICAL();
 }
 
 void schedulerSetEventCOMP1()     //sets the event in the scheduler
 {
   CORE_DECLARE_IRQ_STATE;
-
-  // DOS for debug
-  //gpioToggleLed0();
-
   CORE_ENTER_CRITICAL();
-  eventFlag |= COMP1Event; // this is a RMW
+  sl_bt_external_signal(COMP1Event);
   CORE_EXIT_CRITICAL();
 }
 
-void schedulerSetEventI2CDone()     //sets the event in the scheduler
+void distance_state_machine(sl_bt_msg_t *evt)
 {
-  CORE_DECLARE_IRQ_STATE;
+  if (indications)
+  {
+    uint32_t running_event;
 
-  // DOS for debug
-  //gpioToggleLed0();
+    running_event = evt->data.evt_system_external_signal.extsignals; //event
+    sl_status_t status = 0;
+    distance_t          currentState;
+    static distance_t   nextState = STATE_IDLE;
 
-  CORE_ENTER_CRITICAL();
-  eventFlag |= I2CDoneEvent; // this is a RMW
-  CORE_EXIT_CRITICAL();
+    ble_data_structure_t* ble_common_data = getBLEdata(); //get reference to common ble data structure
+
+    currentState = nextState;
+
+    switch(currentState)
+    {
+
+      case STATE_IDLE:
+        //printf("1\n\r");
+        nextState = STATE_IDLE;
+
+        if (running_event & UFevent)
+          {
+            //printf("2\n\r");
+            TRIG_PIN_HIGH();
+            TimerWaitUs_irq(10);
+            nextState = STATE_TRIG_START;
+          }
+        break;
+
+      case STATE_TRIG_START:
+        //printf("3\n\r");
+        nextState = STATE_TRIG_START;
+
+        if (running_event & COMP1Event)
+          {
+            //printf("4\n\r");
+            TRIG_PIN_LOW();
+            nextState = STATE_ECHO_START;
+          }
+        break;
+
+      case STATE_ECHO_START:
+        //printf("5\n\r");
+        nextState = STATE_ECHO_START;
+
+        if(running_event & GPIOEvent)
+          {
+            //printf("6\n\r");
+            t1 = LETIMER_CounterGet(LETIMER0);
+            nextState = STATE_ECHO_END;
+          }
+        break;
+
+
+      case STATE_ECHO_END:
+        //printf("7\n\r");
+        nextState = STATE_ECHO_END;
+
+        if(running_event & GPIOEvent)
+          {
+            //printf("8\n\r");
+            t2 = LETIMER_CounterGet(LETIMER0);
+            nextState = STATE_CALCULATE_DISTANCE;
+          }
+        break;
+
+      case STATE_CALCULATE_DISTANCE:
+        //printf("9\n\r");
+        difference = t1-t2;
+        duration = (difference*1000000)>>13; //divide by 8192, 2^13 = 8192
+        distance = (float) duration/58;
+
+        displayPrintf(DISPLAY_ROW_TEMPVALUE, "Distance = %d", distance);
+
+        status = sl_bt_gatt_server_send_indication(ble_common_data->connectionHandle,
+                                                   gattdb_distance_value,
+                                                   sizeof(distance),
+                                                   &distance);
+
+        printf("%ld sec: DISTANCE: %.02f cm\n\r", letimerMilliseconds(), (float) distance);
+        if (distance < 100)
+          {
+            operate_door();
+            indications = 0;
+          }
+        printf("------------------------------------------------------------------\n\r");
+        nextState = STATE_IDLE;
+        break;
+
+      default:
+        break;
+    } //switch
+  }
+}   //distance state machine
+
+
+
+static void turn_on_stepper_motor(int direction)
+{
+  if (direction==CLOCKWISE)
+  {
+      clockwise_step1();
+      TimerWaitUs_polled(2500);
+      clockwise_step2();
+      TimerWaitUs_polled(2500);
+      clockwise_step3();
+      TimerWaitUs_polled(2500);
+      clockwise_step4();
+      TimerWaitUs_polled(2500);
+  }
+
+  if (direction==COUNTER_CLOCKWISE)
+    {
+      counter_clockwise_step1();
+      TimerWaitUs_polled(2500);
+      counter_clockwise_step2();
+      TimerWaitUs_polled(2500);
+      counter_clockwise_step3();
+      TimerWaitUs_polled(2500);
+      counter_clockwise_step4();
+      TimerWaitUs_polled(2500);
+    }
 }
 
-
-uint32_t getNextEvent()         //returns the next event to the main loop
+static void turn_off_stepper_motor ()
 {
-  uint32_t event=noEvent;
-  CORE_DECLARE_IRQ_STATE;
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
 
-
-  if (eventFlag & UFevent) {
-
-      // DOS for debug
-      //gpioToggleLed1();
-      //LOG_INFO("B");
-
-      event      = UFevent; // event to return to caller
-      CORE_ENTER_CRITICAL();
-      //eventFlag ^= readTemperature; // RMW, clear event in my private scheduler data structure
-      eventFlag = eventFlag & (UFevent ^ 0xFFFFFFFF); // RMW, clear event in my private scheduler data structure
-      CORE_EXIT_CRITICAL();
-  }
-
-  // DOS: add other events here for A4
-  else if (eventFlag & COMP1Event) {
-
-      // DOS for debug
-      //gpioToggleLed1();
-      //LOG_INFO("B");
-
-      event      = COMP1Event; // event to return to caller
-      CORE_ENTER_CRITICAL();
-      //eventFlag ^= readTemperature; // RMW, clear event in my private scheduler data structure
-      eventFlag = eventFlag & (COMP1Event ^ 0xFFFFFFFF); // RMW, clear event in my private scheduler data structure
-      CORE_EXIT_CRITICAL();
-  }
-
-  else if (eventFlag & I2CDoneEvent) {
-
-      // DOS for debug
-      //gpioToggleLed1();
-      //LOG_INFO("B");
-
-      event      = I2CDoneEvent; // event to return to caller
-      CORE_ENTER_CRITICAL();
-      //eventFlag ^= readTemperature; // RMW, clear event in my private scheduler data structure
-      eventFlag = eventFlag & (I2CDoneEvent ^ 0xFFFFFFFF); // RMW, clear event in my private scheduler data structure
-      CORE_EXIT_CRITICAL();
-  }
-
-  return event;
-
-} // getNextEvent()
-
-
-
-void state_machine (uint32_t event)
+void operate_door()
 {
-     state_t       currentState;
-     static state_t nextState = STATE0_IDLE;
-
-     currentState = nextState;
-
-     switch(currentState)
-     {
-       case STATE0_IDLE:
-         nextState = STATE0_IDLE;
-         if (event == UFevent)
-           {
-             // turn power on to 7021
-           //  gpioSensorEnSetOn();
-             // wait 80ms for power to stabilize and 7021 to complete its power up sequence
-             TimerWaitUs_irq(80000);
-             nextState = STATE1_POWERUP;
-           }
-         break;
-
-       case STATE1_POWERUP:
-         nextState = STATE1_POWERUP;
-         if (event == COMP1Event)
-           {
-             //add power requirement to em1
-             sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-
-             //i2c write
-             I2C_Write();
-
-             nextState = STATE2_I2C_WRITE;
-
-           }
-         break;
-
-       case STATE2_I2C_WRITE:
-         nextState = STATE2_I2C_WRITE;
-         if (event == I2CDoneEvent)
-           {
-
-             //remove power management requirement to wake up from EM3
-             sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-
-             //wait for 10.8 ms for si7021 to take reading
-             TimerWaitUs_irq(10800);
-
-             nextState = STATE3_TIMERWAIT;
-
-           }
-         break;
-
-       case STATE3_TIMERWAIT:
-         nextState = STATE3_TIMERWAIT;
-         if (event == COMP1Event)
-           {
-             //add power requirement to em1
-             sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-
-             //i2c read
-             I2C_Read();
-
-             nextState = STATE4_I2C_READ;
-             //LOG_INFO("To4");
-           }
-         break;
-
-       case STATE4_I2C_READ:
-         nextState = STATE4_I2C_READ;
-
-         if(event == I2CDoneEvent)
-           {
-
-
-
-             //remove power management requirement to wake up from EM3
-             sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-
-             // turn power off to 7021
-             gpioSensorEnSetOff();
-
-             //convert to deg C and log them
-             read_temp_from_si7021();
-             //go back to idle
-
-             // done with I2C for this measurement cycle
-             nextState = STATE0_IDLE;
-             //LOG_INFO("To0");
-
-           }
-         break;
-
-       default:
-         break;
-     } //switch
-
-} //state_machine
+  printf("CAUTION: DOOR OPENING\n\r");
+  for (int i = 0; i<1000; i++)
+    {
+      turn_on_stepper_motor(CLOCKWISE);
+    }
+  turn_off_stepper_motor();
+  for(int i = 0; i<1000; i++)
+  {
+     TimerWaitUs_polled(3000);
+  }
+  printf("CAUTION: DOOR CLOSING\n\r");
+  for (int i = 0; i<1000; i++)
+    {
+      turn_on_stepper_motor(COUNTER_CLOCKWISE);
+    }
+  turn_off_stepper_motor();
+}

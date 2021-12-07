@@ -1,20 +1,35 @@
-#ifndef _MY_ISR_
-#define _MY_ISR_
+/*
+ * File Name: irq.h
+ *
+ * Author:  Tanmay Mahendra Kothale (tanmay-mk)
+ *
+ */
+#ifndef _IRQ_H_
+#define _IRQ_H_
 
-#include "oscillators.h"
-#include "timers.h"
-#include "app.h"
+/*  LIBRARY FILES */
 #include "em_cmu.h"
 #include "em_emu.h"
 #include "em_gpio.h"
 #include "em_letimer.h"
 #include "em_core.h"
 
-#include "src/gpio.h"
+/*  OTHER FILES TO BE INCLUDED   */
+#include "oscillators.h"
+#include "timers.h"
+#include "app.h"
+#include "gpio.h"
 
 
-
+/*  FUNCTION PROTOTYPES */
+/*-------------------------------------------------------------------------------
+ * @brief:  calculates the time passed since last reset
+ *
+ * @parameters: none
+ *
+ * @returns: total time passed (timestamp)
+ ------------------------------------------------------------------------------*/
 uint32_t letimerMilliseconds();
 
-#endif
+#endif /*_IRQ_H_*/
 

@@ -10,15 +10,8 @@
 
  */
 
-
-
-
 #include "gpio.h"
 #include "em_cmu.h"
-
-
-
-
 
 // Set GPIO drive strengths and modes of operation
 void gpioInit()
@@ -36,6 +29,31 @@ void gpioInit()
 
 	// DOS: SENSOR_ENABLE GPIO
 	GPIO_PinModeSet(gpioPortD, 15, gpioModePushPull, false);
+
+  GPIO_DriveStrengthSet(TRIG_PORT, gpioDriveStrengthWeakAlternateWeak);
+  GPIO_PinModeSet(TRIG_PORT, TRIG_PIN, gpioModePushPull, false);
+
+  //GPIO_DriveStrengthSet(ECHO_PORT, gpioDriveStrengthWeakAlternateWeak);
+  GPIO_PinModeSet(ECHO_PORT, ECHO_PIN, gpioModeInput, false);  //previously configured as o/p
+
+  GPIO_ExtIntConfig(ECHO_PORT, ECHO_PIN, ECHO_PIN, true, true, true);
+
+//  GPIO_PinModeSet(PB0_port,PB0_pin,gpioModePushPull, true);
+//  GPIO_ExtIntConfig (PB0_port, PB0_pin, PB0_pin, true, true, true);
+
+//  NVIC_ClearPendingIRQ(GPIO_EVEN_IRQn);
+//  NVIC_EnableIRQ(GPIO_EVEN_IRQn);
+    NVIC_ClearPendingIRQ(GPIO_ODD_IRQn);
+    NVIC_EnableIRQ(GPIO_ODD_IRQn);
+
+
+  GPIO_DriveStrengthSet(STEPPER_MOTOR_PORT_A, gpioDriveStrengthStrongAlternateStrong);
+  GPIO_PinModeSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1, gpioModePushPull, false);
+  GPIO_PinModeSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2, gpioModePushPull, false);
+//
+  GPIO_DriveStrengthSet(STEPPER_MOTOR_PORT_D, gpioDriveStrengthStrongAlternateStrong);
+  GPIO_PinModeSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3, gpioModePushPull, false);
+  GPIO_PinModeSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4, gpioModePushPull, false);
 
 } // gpioInit()
 
@@ -108,4 +126,86 @@ void gpioToggleLed1() {
 
 } // gpioToggleLed1()
 
+void gpioSetDisplayExtcomin(bool value)
+{
+  if(value)
+  {
+    GPIO_PinOutSet(gpioPortD, 13);
+  }
+  else if(!value)
+  {
+    GPIO_PinOutClear(gpioPortD, 13);
+  }
+}
 
+void TRIG_PIN_HIGH()
+{
+  GPIO_PinOutSet(TRIG_PORT, TRIG_PIN);
+}
+void TRIG_PIN_LOW()
+{
+  GPIO_PinOutClear(TRIG_PORT, TRIG_PIN);
+}
+
+void clockwise_step1()
+{
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void clockwise_step2()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void clockwise_step3()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void clockwise_step4()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void counter_clockwise_step1()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void counter_clockwise_step2()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+
+void counter_clockwise_step3()
+{
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}
+void counter_clockwise_step4()
+{
+  GPIO_PinOutSet(STEPPER_MOTOR_PORT_A, STEPPER_PIN_1);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_A, STEPPER_PIN_2);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_3);
+  GPIO_PinOutClear(STEPPER_MOTOR_PORT_D, STEPPER_PIN_4);
+}

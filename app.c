@@ -44,6 +44,10 @@
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
+#include "src/ble.h"
+#include "src/scheduler.h"
+#include "src/gpio.h"
+#include "em_gpio.h"
 
 /*****************************************************************************
  * Application Power Manager callbacks
@@ -80,70 +84,18 @@ sl_power_manager_on_isr_exit_t app_sleep_on_isr_exit(void)
  *****************************************************************************/
 SL_WEAK void app_init(void)
 {
-  // Put your application 1-time init code here
-  // This is called once during start-up.
-  // Don't call any Bluetooth API functions until after the boot event.
   gpioInit();
   clkInitLETIMER();
-  // DOS: better to call from functions where you are about to initiate and I2C transfer
-  // InitI2C();
   initLETIMER();
-
-  // DOS: Test code to make sure TimerWaitUs() is functioning properly
-//  while (1) {
-//      TimerWaitUs(1000000);
-//      gpioLed0SetOn();
-//      TimerWaitUs(1000000);
-//      gpioLed0SetOff();
-//  }
-
 } // app_init()
-
-
-/*****************************************************************************
- * delayApprox(), private to this file.
- * A value of 3500000 is ~ 1 second. After assignment 1 you can delete or
- * comment out this function. Wait loops are a bad idea in general.
- * We'll discuss how to do this a better way in the next assignment.
- *****************************************************************************/
-/*static void delayApprox(int delay)
-{
-  volatile int i;
-
-  for (i = 0; i < delay; ) {
-      i=i+1;
-  }
-
-} */// delayApprox()
-
-
-
 
 /**************************************************************************//**
  * Application Process Action.
  *****************************************************************************/
 SL_WEAK void app_process_action(void)
 {
-  // Put your application code here.
-  // This is called repeatedly from the main while(1) loop
-  // Notice: This function is not passed or has access to Bluetooth stack events.
-  //         We will create/use a scheme that is far more energy efficient in
-  //         later assignments.
-
-  uint32_t evt;
-
-  evt = getNextEvent();
-
-//  // DOS debugging code
-//  if (evt != 0) {
-//    LOG_INFO("E=%d", (int) evt);
-//  }
-
-    state_machine(evt);
 
 } // app_process_action()
-
-
 
 /**************************************************************************//**
  * Bluetooth stack event handler.
@@ -157,19 +109,8 @@ SL_WEAK void app_process_action(void)
 void sl_bt_on_event(sl_bt_msg_t *evt)
 {
   
-  // Just a trick to hide a compiler warning about unused input parameter evt.
-  // We will add real functionality here later.
-  if (evt->header) {
-      printf(".\n");
-  }
+  handle_ble_event(evt); // put this code in ble.c/.h
 
-
-  // Some events require responses from our application code,
-  // and don’t necessarily advance our state machines.
-  // For assignment 5 uncomment the next 2 function calls
-  // handle_ble_event(evt); // put this code in ble.c/.h
-
-  // sequence through states driven by events
-  //state_machine(evt);    // put this code in scheduler.c/.h
-
+  distance_state_machine(evt);
+//  turn_stepper_motor(counter_clockwise);
 }

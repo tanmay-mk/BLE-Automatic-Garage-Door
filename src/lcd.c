@@ -135,9 +135,9 @@ void displayPrintf(enum display_row row, const char *format, ...)
    }
    // Note: enum types are unsigned, so negative row values passed in become large
    //       positive values trapped by the the range check above.
-   //if (row < 0) {
-   //    LOG_ERROR("row parameter %d is negative", (int) row);
-   //    return;
+  // if (row < 0) {
+    //   LOG_ERROR("row parameter %d is negative", (int) row);
+    //   return;
    //}
 
    // Convert the variable length / formatted input to a string
@@ -239,7 +239,7 @@ void displayInit()
     //           the time now for the LCD to function properly.
     //           Create that function to gpio.c/.h Then add that function call here.
     //
-    //gpioSensorEnSetOn(); // we need SENSOR_ENABLE=1 which is tied to DISP_ENABLE
+    gpioSensorEnSetOn(); // we need SENSOR_ENABLE=1 which is tied to DISP_ENABLE
     //                     // for the LCD, on all the time now
 
 
@@ -297,11 +297,11 @@ void displayInit()
     // Students: Figure out what parameters to pass in to sl_bt_system_set_soft_timer() to
     //           set up a 1 second repeating soft timer and uncomment the following lines
 
-	  //sl_status_t          timer_response;
-	  //timer_response = sl_bt_system_set_soft_timer();
-	  //if (timer_response != SL_STATUS_OK) {
-	  //    LOG_...
-    // }
+	  sl_status_t          timer_response;
+	  timer_response = sl_bt_system_set_soft_timer(32768,0,0);
+	  if (timer_response != SL_STATUS_OK) {
+	      LOG_ERROR("Timer response failed.\n\r");
+     }
 
 
 
@@ -327,7 +327,7 @@ void displayUpdate()
 	//           the EXTCOMIN input to the LCD. Add that function to gpio.c./.h
 	//           Then uncomment the following line.
 	//
-	//gpioSetDisplayExtcomin(display->last_extcomin_state_high);
+	gpioSetDisplayExtcomin(display->last_extcomin_state_high);
 	
 } // displayUpdate()
 

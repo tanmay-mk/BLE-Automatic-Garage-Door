@@ -55,11 +55,10 @@
 #include "src/oscillators.h"
 #include "src/irq.h"
 #include "src/scheduler.h"
-#include "src/i2c.h"
 
-#define ENERGY_MODE         3
-#define LETIMER_PERIOD_MS   3000    //Time period of waveform in milliseconds
-#define LETIMER_ON_MS       175     //ON time of LED in milliseconds
+
+#define ENERGY_MODE         2
+#define LETIMER_PERIOD_MS   500    //Time period of waveform in milliseconds
 
 #define LFXO_FREQ 32768                     // LFXO frequency for EM0, EM1, EM2 is 32768 Hz
 #define ULFRCO_FREQ 1000                    // ULFRCO frequency for EM3 and EM4 is 1000 Hz
@@ -92,8 +91,7 @@
 //   Return true to allow system to sleep when you expect/want an IRQ to wake
 //   up the MCU from the call to sl_power_manager_sleep() in the main while (1)
 //   loop.
-// Students: We'll need to modify this for A2 onward.
-// DOS: Info for this was provided in lecture 5, slide 21. Why have you not implemented it? I code it here for you.
+
 #if (ENERGY_MODE == 0)
     //Used only for EM0
     #define APP_IS_OK_TO_SLEEP      (false)

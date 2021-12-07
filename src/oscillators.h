@@ -1,15 +1,21 @@
-#ifndef __myOscillator
-#define __myOscillator
+/*
+ * File Name: oscillators.h
+ *
+ * Author:  Tanmay Mahendra Kothale (tanmay-mk)
+ *
+ */
+#ifndef _OSCILLATORS_H_
+#define _OSCILLATORS_H_
 
+/*  LIBRARY FILES   */
 #include "app.h"
 #include "em_letimer.h"
 #include "main.h"
 #include <stdint.h>
-
 #include "em_cmu.h"
 #include "em_emu.h"
 #include "em_gpio.h"
-#include "em_letimer.h"
+
 
 #if (ENERGY_MODE < 3)
    // This is for LFXO @ 32768 Hz
@@ -20,7 +26,14 @@
    #define PRESCALE        (1)
 #endif
 
+/*  FUNCTION PROTOTYPES   */
+/*-------------------------------------------------------------------------------
+ * @brief: initializes clock for peripherals (LETIMER) based on Energy mode
+ *
+ * @parameters: none
+ *
+ * @returns: none
+ ------------------------------------------------------------------------------*/
+void clkInitLETIMER();
 
-void clkInitLETIMER();          //Function to initialize clock
-
-#endif
+#endif /*_OSCILLATORS_H_*/
